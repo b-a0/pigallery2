@@ -6,7 +6,6 @@
 
   <div class="lightbox" #lightbox>
     <app-gallery-lightbox-media [gridMedia]="activePhoto ? activePhoto.gridMedia : null"
-                                [nextGridMedia]="NexGridMedia"
                                 [loadMedia]="!animating"
                                 [zoom]="controls ? controls.Zoom : 1"
                                 [drag]="controls ? controls.drag : {x:0,y:0}"
@@ -18,7 +17,7 @@
     <div class="container h-100 flex-column" *ngIf="videoSourceError && activePhoto">
       <div class="row justify-content-center align-items-center h-100">
         <div class="col-md-8 text-white text-center">
-          <span class="oi oi-warning h2 me-2"></span><span class="h2" i18n>Error during loading the video.</span>
+          <span class="oi oi-warning h2 mr-2"></span><span class="h2" i18n>Error during loading the video.</span>
           <br/>
           <ng-container *ngIf="activePhoto.gridMedia.isVideoTranscodingNeeded()" i18n>
             Most likely the video is not transcoded.

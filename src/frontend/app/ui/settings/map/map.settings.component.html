@@ -7,14 +7,14 @@
           class="switch"
           name="enabled"
           switch-on-color="success"
-          [switch-inverse]="true"
+          switch-inverse="true"
           switch-off-text="Disabled"
           switch-on-text="Enabled"
           i18n-switch-off-text
           i18n-switch-on-text
           [switch-disabled]="inProgress"
-          [switch-handle-width]="100"
-          [switch-label-width]="20"
+          switch-handle-width="100"
+          switch-label-width="20"
           [(ngModel)]="states.enabled.value">
         </bSwitch>
       </div>
@@ -22,6 +22,8 @@
     <div class="card-body">
       <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
       <ng-container *ngIf="states.enabled.value">
+
+
 
 
         <app-settings-entry
@@ -33,12 +35,13 @@
         </app-settings-entry>
 
 
+
         <app-settings-entry
           name="Map provider"
           i18n-name
           [ngModel]="states.mapProvider"
           [simplifiedMode]="simplifiedMode"
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
 
@@ -63,7 +66,7 @@
               <td>
                 <button [disabled]="states.customLayers.value.length == 1" (click)="removeLayer(layer)"
                         [ngClass]="states.customLayers.value.length > 1? 'btn-danger':'btn-secondary'"
-                        class="btn float-end">
+                        class="btn float-right">
                   <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
                 </button>
               </td>
@@ -88,7 +91,7 @@
           i18n-name
           placeholder="Mapbox access token"
           [ngModel]="states.mapboxAccessToken"
-          [required]="true">
+          required="true">
           <small class="form-text text-muted">
             <ng-container i18n>MapBox needs an access token to work, create one at</ng-container>
             &nbsp;<a href="https://www.mapbox.com">https://www.mapbox.com</a>.
@@ -97,11 +100,11 @@
 
 
       </ng-container>
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

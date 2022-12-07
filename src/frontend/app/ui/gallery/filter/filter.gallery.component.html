@@ -50,7 +50,7 @@
            *ngFor="let filter of ActiveFilters.selectedFilters; let i=index">
         <select [(ngModel)]="filter.filter"
                 (ngModelChange)="filterService.onFilterChange()"
-                class="form-select" id="gallery-filter-{{i}}">
+                class="form-control" id="gallery-filter-{{i}}">
           <option *ngFor="let f of filterService.AVAILABLE_FILTERS"
                   [ngValue]="f">{{f.name}}</option>
         </select>
@@ -69,9 +69,9 @@
                     i18n-title></span>
                 {{option.name === undefined ? unknownText : option.name}}
               </div>
-              <span class="badge"
-                    [class.bg-primary]="option.selected"
-                    [class.bg-secondary]="!option.selected"
+              <span class="badge badge-pill"
+                    [class.badge-primary]="option.selected"
+                    [class.badge-secondary]="!option.selected"
               >{{option.count}}</span>
 
 

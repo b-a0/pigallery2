@@ -1,10 +1,10 @@
 <div class="row mt-1 mb-1" *ngIf="queryEntry">
   <ng-container *ngIf="IsListQuery">
-    <div class="col-md-3">
+    <div class="input-group col-md-3">
       <select
         id="listSearchType"
         name="listSearchType"
-        class="form-select"
+        class="form-control"
         [(ngModel)]="queryEntry.type"
         (ngModelChange)="onChangeType()">
         <option *ngFor="let opt of SearchQueryTypesEnum" [ngValue]="opt.key">{{opt.value}}
@@ -32,7 +32,7 @@
     </ng-container>
 
     <button [ngClass]="'btn-danger'"
-            class="btn float-end col-md-1"
+            class="btn float-right col-md-1"
             (click)="deleteItem()">
       <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
     </button>
@@ -42,46 +42,42 @@
                                       (delete)="itemDeleted(i)">
       </app-gallery-search-query-entry>
     </div>
-    <div class="col d-flex justify-content-center">
-      <button class="btn btn-primary mx-auto" (click)="addQuery()">
-        <span class="oi oi-plus" aria-hidden="true" aria-label="Add"> Add</span>
-      </button>
-    </div>
+    <button class="btn btn-primary mx-auto" (click)="addQuery()">
+      <span class="oi oi-plus" aria-hidden="true" aria-label="Add"> Add</span>
+    </button>
   </ng-container>
   <ng-container *ngIf="!IsListQuery">
-    <div class="col-md-3">
+    <div class="input-group col-md-3">
       <select
         id="searchType"
         name="searchType"
-        class="form-select"
+        class="form-control"
         [(ngModel)]="queryEntry.type"
         (ngModelChange)="onChangeType()">
         <option *ngFor="let opt of SearchQueryTypesEnum" [ngValue]="opt.key">{{opt.value}}
         </option>
       </select>
     </div>
-    <div class="col-md-8" *ngIf="IsTextQuery">
-      <div class="input-group">
+    <div class="input-group col-md-8" *ngIf="IsTextQuery">
       <span title="exact match"
             p18n-title
             class="match-type"
             (click)="toggleMatchType()"
             [class.exact-match]="AsTextQuery.matchType === TextSearchQueryMatchTypes.exact_match">"</span>
-        <input
-          id="searchField"
-          name="searchField"
-          placeholder="Search text"
-          class="form-control"
-          [(ngModel)]="AsTextQuery.text"
-          (change)="onChange()"
-          (ngModelChange)="onChange()"
-          type="text"/>
-        <span title="exact match"
-              p18n-title
-              class="match-type"
-              (click)="toggleMatchType()"
-              [class.exact-match]="AsTextQuery.matchType === TextSearchQueryMatchTypes.exact_match">"</span>
-      </div>
+      <input
+        id="searchField"
+        name="searchField"
+        placeholder="Search text"
+        class="form-control input-md"
+        [(ngModel)]="AsTextQuery.text"
+        (change)="onChange()"
+        (ngModelChange)="onChange()"
+        type="text"/>
+      <span title="exact match"
+            p18n-title
+            class="match-type"
+            (click)="toggleMatchType()"
+            [class.exact-match]="AsTextQuery.matchType === TextSearchQueryMatchTypes.exact_match">"</span>
     </div>
     <ng-container [ngSwitch]="queryEntry.type">
       <div *ngSwitchCase="SearchQueryTypes.distance" class="col-md-8 d-flex">
@@ -118,7 +114,7 @@
                title="From date"
                i18n-title
                [ngModel]="AsRangeQuery.value | date:'yyyy-MM-dd'"
-               (ngModelChange)="AsRangeQuery.value = $event; onChange() "
+               (ngModelChange)="AsRangeQuery.value = $event; onChange(queryEntry) "
                [value]="AsRangeQuery.value | date:'yyyy-MM-dd'" #from_date="ngModel"
                class="form-control input-md"
                type="date">
@@ -130,7 +126,7 @@
                title="To date"
                i18n-title
                [ngModel]="AsRangeQuery.value | date:'yyyy-MM-dd'"
-               (ngModelChange)="AsRangeQuery.value = $event; onChange() "
+               (ngModelChange)="AsRangeQuery.value = $event; onChange(queryEntry) "
                [value]="AsRangeQuery.value | date:'yyyy-MM-dd'" #to_date="ngModel"
                class="form-control input-md"
                type="date">
@@ -206,13 +202,13 @@
             title="Orientation"
             switch-on-color="primary"
             switch-off-color="primary"
-            [switch-inverse]="true"
+            switch-inverse="true"
             switch-off-text="Portrait"
             switch-on-text="Landscape"
             i18n-switch-off-text
             i18n-switch-on-text
-            [switch-handle-width]="100"
-            [switch-label-width]="20"
+            switch-handle-width="100"
+            switch-label-width="20"
             (ngModelChange)="onChange()"
             [(ngModel)]="AsOrientationQuery.landscape">
           </bSwitch>
@@ -220,7 +216,7 @@
       </div>
     </ng-container>
     <button [ngClass]="'btn-danger'"
-            class="btn float-end col-md-1"
+            class="btn float-right col-md-1"
             (click)="deleteItem()">
       <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
     </button>

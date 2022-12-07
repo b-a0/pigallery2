@@ -1,14 +1,11 @@
-import { JobProgressDTO } from '../../../../common/entities/job/JobProgressDTO';
-import { JobDTO } from '../../../../common/entities/job/JobDTO';
-import { IObjectManager } from './IObjectManager';
+import {JobProgressDTO} from '../../../../common/entities/job/JobProgressDTO';
+import {JobDTO} from '../../../../common/entities/job/JobDTO';
+import {IObjectManager} from './IObjectManager';
 
 export interface IJobManager extends IObjectManager {
-  run(
-    jobId: string,
-    config: unknown,
-    soloRun: boolean,
-    allowParallelRun: boolean
-  ): Promise<void>;
+
+
+  run(jobId: string, config: any, soloRun: boolean, allowParallelRun: boolean): Promise<void>;
 
   stop(jobId: string): void;
 
@@ -19,4 +16,5 @@ export interface IJobManager extends IObjectManager {
   stopSchedules(): void;
 
   runSchedules(): void;
+
 }

@@ -11,7 +11,7 @@
         name="Page title"
         [ngModel]="states.applicationTitle"
         i18n-name
-        [required]="true"
+        required="true"
         [simplifiedMode]="simplifiedMode">
       </app-settings-entry>
 
@@ -22,7 +22,7 @@
         description="Server will accept connections from this IPv6 or IPv4 address."
         i18n-description i18n-name
         placeholder="0.0.0.0"
-        [required]="true"
+        required="true"
         [simplifiedMode]="simplifiedMode">
       </app-settings-entry>
 
@@ -32,7 +32,7 @@
         description="Port number. Port 80 is usually what you need."
         i18n-description i18n-name
         [ngModel]="states.port"
-        [required]="true"
+        required="true"
         [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
         [simplifiedMode]="simplifiedMode">
       </app-settings-entry>
@@ -43,7 +43,7 @@
         description="Images are loaded from this folder (read permission required)"
         placeholder="path"
         i18n-description i18n-name
-        [required]="true"
+        required
         [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
         [ngModel]="states.imagesFolder">
       </app-settings-entry>
@@ -55,7 +55,7 @@
             permission required)"
         placeholder="path"
         i18n-description i18n-name
-        [required]="true"
+        required="true"
         [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
         [ngModel]="states.tempFolder">
       </app-settings-entry>
@@ -91,11 +91,11 @@
         The public url and the url base are not matching. Some of the functionality might not work.
       </div>
 
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

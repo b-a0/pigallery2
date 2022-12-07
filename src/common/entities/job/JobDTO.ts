@@ -1,6 +1,7 @@
-import { backendText } from '../../BackendTexts';
+import {backendText} from '../../BackendTexts';
 
 export type fieldType = 'string' | 'number' | 'boolean' | 'number-array';
+
 
 export enum DefaultsJobs {
   Indexing = 1,
@@ -10,8 +11,7 @@ export enum DefaultsJobs {
   'Thumbnail Generation' = 5,
   'Temp Folder Cleaning' = 6,
   'Preview Filling' = 7,
-  'Preview Reset' = 8,
-  'GPX Compression' = 9,
+  'Preview Reset' = 8
 }
 
 export interface ConfigTemplateEntry {
@@ -30,5 +30,5 @@ export interface JobDTO {
 export const JobDTOUtils = {
   getHashName: (jobName: string, config: any = {}) => {
     return jobName + '-' + JSON.stringify(config);
-  },
+  }
 };

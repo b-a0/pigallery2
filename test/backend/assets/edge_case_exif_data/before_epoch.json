@@ -27,10 +27,12 @@
     "USA Road trip",
     "Yosemite"
   ],
+  "orientation": 1,
   "positionData": {
     "GPSData": {
-      "latitude": 37.748058,
-      "longitude": -119.514023
+      "altitude": 1960,
+      "latitude": 37.74805833333333,
+      "longitude": -119.51402333333333
     },
     "city": "Yosemite Nemzeti Park",
     "country": "United States",

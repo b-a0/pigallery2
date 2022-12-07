@@ -1,9 +1,8 @@
-import { SharingDTO } from '../../../../common/entities/SharingDTO';
-import { IObjectManager } from './IObjectManager';
-import { FindOptionsWhere } from 'typeorm';
+import {SharingDTO} from '../../../../common/entities/SharingDTO';
+import {IObjectManager} from './IObjectManager';
 
 export interface ISharingManager extends IObjectManager {
-  findOne(filter: FindOptionsWhere<SharingDTO>): Promise<SharingDTO>;
+  findOne(filter: any): Promise<SharingDTO>;
 
   createSharing(sharing: SharingDTO): Promise<SharingDTO>;
 

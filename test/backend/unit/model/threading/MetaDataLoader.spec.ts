@@ -95,12 +95,12 @@ describe('MetadataLoader', () => {
 
   });
 
-  // TODO: deprecated tests. We do not save orientation anymore.
   describe('should read orientation', () => {
     for (let i = 0; i <= 8; ++i) {
       it('Landscape ' + i, async () => {
         const data = await MetadataLoader.loadPhotoMetadata(path.join(__dirname, '/../../../assets/orientation/Landscape_' + i + '.jpg'));
         const expected = require(path.join(__dirname, '/../../../assets/orientation/Landscape.json'));
+        expected.orientation = i;
         delete data.fileSize;
         delete data.creationDate;
         expect(Utils.clone(data)).to.be.deep.equal(expected);
@@ -108,6 +108,7 @@ describe('MetadataLoader', () => {
       it('Portrait ' + i, async () => {
         const data = await MetadataLoader.loadPhotoMetadata(path.join(__dirname, '/../../../assets/orientation/Portrait_' + i + '.jpg'));
         const expected = require(path.join(__dirname, '/../../../assets/orientation/Portrait.json'));
+        expected.orientation = i;
         delete data.fileSize;
         delete data.creationDate;
         expect(Utils.clone(data)).to.be.deep.equal(expected);

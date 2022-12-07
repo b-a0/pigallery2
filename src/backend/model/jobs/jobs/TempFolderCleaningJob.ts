@@ -1,15 +1,11 @@
-import {
-  ConfigTemplateEntry,
-  DefaultsJobs,
-} from '../../../../common/entities/job/JobDTO';
+import {ConfigTemplateEntry, DefaultsJobs} from '../../../../common/entities/job/JobDTO';
 import * as path from 'path';
 import * as fs from 'fs';
 import {Job} from './Job';
 import {ProjectPath} from '../../../ProjectPath';
 import {PhotoProcessing} from '../../fileprocessing/PhotoProcessing';
 import {VideoProcessing} from '../../fileprocessing/VideoProcessing';
-import {DiskMangerWorker} from '../../threading/DiskMangerWorker';
-import {GPXProcessing} from '../../fileprocessing/GPXProcessing';
+
 
 export class TempFolderCleaningJob extends Job {
   public readonly Name = DefaultsJobs[DefaultsJobs['Temp Folder Cleaning']];
@@ -18,11 +14,13 @@ export class TempFolderCleaningJob extends Job {
   directoryQueue: string[] = [];
   private tempRootCleaned = false;
 
+
   protected async init(): Promise<void> {
     this.tempRootCleaned = false;
     this.directoryQueue = [];
     this.directoryQueue.push(ProjectPath.TranscodedFolder);
   }
+
 
   protected async isValidFile(filePath: string): Promise<boolean> {
     if (PhotoProcessing.isPhoto(filePath)) {
@@ -33,31 +31,22 @@ export class TempFolderCleaningJob extends Job {
       return VideoProcessing.isValidConvertedPath(filePath);
     }
 
-    if (GPXProcessing.isMetaFile(filePath)) {
-      return GPXProcessing.isValidConvertedPath(filePath);
-    }
-
     return false;
   }
 
   protected async isValidDirectory(filePath: string): Promise<boolean> {
-    const originalPath = path.join(
-      ProjectPath.ImageFolder,
-      path.relative(ProjectPath.TranscodedFolder, filePath)
-    );
+    const originalPath = path.join(ProjectPath.ImageFolder,
+      path.relative(ProjectPath.TranscodedFolder, filePath));
     try {
       await fs.promises.access(originalPath);
       return true;
     } catch (e) {
-      // ignoring errors
     }
     return false;
   }
 
   protected async readDir(dirPath: string): Promise<string[]> {
-    return (await fs.promises.readdir(dirPath)).map((f) =>
-      path.normalize(path.join(dirPath, f))
-    );
+    return (await fs.promises.readdir(dirPath)).map(f => path.normalize(path.join(dirPath, f)));
   }
 
   protected async stepTempDirectory(): Promise<boolean> {
@@ -68,7 +57,7 @@ export class TempFolderCleaningJob extends Job {
         this.Progress.log('processing: ' + file);
         this.Progress.Processed++;
         if ((await fs.promises.stat(file)).isDirectory()) {
-          await fs.promises.rm(file, {recursive: true});
+          await fs.promises.rmdir(file, {recursive: true});
         } else {
           await fs.promises.unlink(file);
         }
@@ -78,28 +67,30 @@ export class TempFolderCleaningJob extends Job {
       }
     }
 
+
     return true;
+
+
   }
 
   protected async stepConvertedDirectory(): Promise<boolean> {
+
     const filePath = this.directoryQueue.shift();
     const stat = await fs.promises.stat(filePath);
 
     this.Progress.Left = this.directoryQueue.length;
     if (stat.isDirectory()) {
-      if ((await this.isValidDirectory(filePath)) === false) {
+      if (await this.isValidDirectory(filePath) === false) {
         this.Progress.log('processing: ' + filePath);
         this.Progress.Processed++;
-        await fs.promises.rm(filePath, {recursive: true});
+        await fs.promises.rmdir(filePath, {recursive: true});
       } else {
         this.Progress.log('skipping: ' + filePath);
         this.Progress.Skipped++;
-        this.directoryQueue = this.directoryQueue.concat(
-          await this.readDir(filePath)
-        );
+        this.directoryQueue = this.directoryQueue.concat(await this.readDir(filePath));
       }
     } else {
-      if ((await this.isValidFile(filePath)) === false) {
+      if (await this.isValidFile(filePath) === false) {
         this.Progress.log('processing: ' + filePath);
         this.Progress.Processed++;
         await fs.promises.unlink(filePath);
@@ -107,6 +98,7 @@ export class TempFolderCleaningJob extends Job {
         this.Progress.log('skipping: ' + filePath);
         this.Progress.Skipped++;
       }
+
     }
     return true;
   }
@@ -122,4 +114,5 @@ export class TempFolderCleaningJob extends Job {
     }
     return this.stepConvertedDirectory();
   }
+
 }

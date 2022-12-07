@@ -1,6 +1,9 @@
 import {DBTestHelper} from '../../../DBTestHelper';
 import {ParentDirectoryDTO, SubDirectoryDTO} from '../../../../../src/common/entities/DirectoryDTO';
+import {TestHelper} from './TestHelper';
 import {ObjectManagers} from '../../../../../src/backend/model/ObjectManagers';
+import {PhotoDTO} from '../../../../../src/common/entities/PhotoDTO';
+import {VideoDTO} from '../../../../../src/common/entities/VideoDTO';
 import {AlbumManager} from '../../../../../src/backend/model/database/sql/AlbumManager';
 import {SearchQueryTypes, TextSearch} from '../../../../../src/common/entities/SearchQueryDTO';
 import {SQLConnection} from '../../../../../src/backend/model/database/sql/SQLConnection';
@@ -10,9 +13,7 @@ import {MediaDTO} from '../../../../../src/common/entities/MediaDTO';
 import {SavedSearchDTO} from '../../../../../src/common/entities/album/SavedSearchDTO';
 
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const deepEqualInAnyOrder = require('deep-equal-in-any-order');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const chai = require('chai');
 
 chai.use(deepEqualInAnyOrder);

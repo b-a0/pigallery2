@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions,@typescript-eslint/no-unused-expressions */
+/* tslint:disable:no-unused-expression */
 import {expect} from 'chai';
 import {AuthenticationMWs} from '../../../../../src/backend/middlewares/user/AuthenticationMWs';
 import {ErrorCodes, ErrorDTO} from '../../../../../src/common/entities/Error';
@@ -85,14 +85,14 @@ describe('Authentication middleware', () => {
     };
 
     it('should catch unauthorized path usage', async () => {
-      req.session['user'].permissions = [path.normalize('/sub/subsub')];
+      req.session.user.permissions = [path.normalize('/sub/subsub')];
       expect(await test('/sub/subsub')).to.be.eql('ok');
       expect(await test('/test')).to.be.eql(403);
       expect(await test('/')).to.be.eql(403);
       expect(await test('/sub/test')).to.be.eql(403);
       expect(await test('/sub/subsub/test')).to.be.eql(403);
       expect(await test('/sub/subsub/test/test2')).to.be.eql(403);
-      req.session['user'].permissions = [path.normalize('/sub/subsub'), path.normalize('/sub/subsub2')];
+      req.session.user.permissions = [path.normalize('/sub/subsub'), path.normalize('/sub/subsub2')];
       expect(await test('/sub/subsub2')).to.be.eql('ok');
       expect(await test('/sub/subsub')).to.be.eql('ok');
       expect(await test('/test')).to.be.eql(403);
@@ -100,7 +100,7 @@ describe('Authentication middleware', () => {
       expect(await test('/sub/test')).to.be.eql(403);
       expect(await test('/sub/subsub/test')).to.be.eql(403);
       expect(await test('/sub/subsub2/test')).to.be.eql(403);
-      req.session['user'].permissions = [path.normalize('/sub/subsub*')];
+      req.session.user.permissions = [path.normalize('/sub/subsub*')];
       expect(await test('/b')).to.be.eql(403);
       expect(await test('/sub')).to.be.eql(403);
       expect(await test('/sub/subsub2')).to.be.eql(403);
@@ -277,7 +277,7 @@ describe('Authentication middleware', () => {
       };
       const next: any = (err: ErrorDTO) => {
         expect(err).to.be.undefined;
-        expect(req.session['user']).to.be.eql('test user');
+        expect(req.session.user).to.be.eql('test user');
         done();
       };
       ObjectManagers.getInstance().UserManager = {

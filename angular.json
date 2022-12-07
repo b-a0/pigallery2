@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
-  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -10,11 +7,7 @@
       "root": "",
       "sourceRoot": "src/frontend",
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
+      "schematics": {},
       "prefix": "app",
       "i18n": {
         "sourceLocale": {
@@ -22,7 +15,7 @@
           "baseHref": ""
         },
         "locales": {
-          "zh": {
+          "cn": {
             "baseHref": "",
             "translation": "src/frontend/translate/messages.cn.xlf"
           },
@@ -70,7 +63,7 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "localize": true,
             "aot": true,
@@ -90,35 +83,24 @@
               }
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/open-iconic/font/css/open-iconic-bootstrap.css",
-              "node_modules/ngx-toastr/toastr.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-              "src/frontend/bootstrap-switch.css",
+              "bootstrap/dist/css/bootstrap.min.css",
+              "ngx-bootstrap/datepicker/bs-datepicker.css",
+              "open-iconic/font/css/open-iconic-bootstrap.css",
+              "ngx-toastr/toastr.css",
+              "leaflet/dist/leaflet.css",
+              "leaflet.markercluster/dist/MarkerCluster.css",
+              "leaflet.markercluster/dist/MarkerCluster.Default.css",
               "src/frontend/styles.css"
             ],
             "scripts": [
-              "node_modules/marked/marked.min.js"
+              "node_modules/marked/lib/marked.js"
             ],
-            "i18nMissingTranslation": "warning",
-            "customWebpackConfig": {
-              "path": "./angular.webpack.js",
-              "replaceDuplicatePlugins": true
-            }
+            "i18nMissingTranslation": "warning"
           },
           "configurations": {
             "dev": {
               "outputPath": "dist/en",
               "localize": false,
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
               "watch": true
             },
             "production": {
@@ -151,7 +133,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "pigallery2:build"
           },
@@ -162,13 +144,13 @@
           }
         },
         "extract-i18n": {
-          "builder": "@angular-builders/custom-webpack:extract-i18n",
+          "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "pigallery2:build"
           }
         },
         "test": {
-          "builder": "@angular-builders/custom-webpack:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/frontend/test.ts",
             "karmaConfig": "./karma.conf.js",
@@ -176,15 +158,14 @@
             "tsConfig": "src/frontend/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/ngx-toastr/toastr.css",
-              "node_modules/bootstrap/dist/css/bootstrap.css",
-              "node_modules/open-iconic/font/css/open-iconic-bootstrap.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-              "src/frontend/bootstrap-switch.css",
+              "bootstrap/dist/css/bootstrap.min.css",
+              "ngx-toastr/toastr.css",
+              "bootstrap/dist/css/bootstrap.css",
+              "open-iconic/font/css/open-iconic-bootstrap.css",
+              "ngx-bootstrap/datepicker/bs-datepicker.css",
+              "leaflet/dist/leaflet.css",
+              "leaflet.markercluster/dist/MarkerCluster.css",
+              "leaflet.markercluster/dist/MarkerCluster.Default.css",
               "src/frontend/styles.css"
             ],
             "assets": [
@@ -194,24 +175,53 @@
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "./assets/"
               }
-            ],
-            "customWebpackConfig": {
-              "path": "./angular.webpack.js",
-              "replaceDuplicatePlugins": true
-            }
+            ]
           }
         },
         "lint": {
-          "builder": "@angular-eslint/builder:lint",
+          "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": []
+          }
+        }
+      }
+    },
+    "pigallery2-e2e": {
+      "root": "",
+      "sourceRoot": "",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "pigallery2:serve"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "test/e2e/tsconfig.e2e.json"
+            ],
+            "exclude": []
           }
         }
       }
     }
   },
-  "defaultProject": "pigallery2"
+  "defaultProject": "pigallery2",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
 }

@@ -1,145 +1,136 @@
-import { Injectable, NgModule } from '@angular/core';
-import {
-  BrowserModule,
-  HAMMER_GESTURE_CONFIG,
-  HammerGestureConfig,
-  HammerModule,
-} from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { AppComponent } from './app.component';
-import { UserService } from './model/network/user.service';
-import { ContentService } from './ui/gallery/content.service';
-import { NetworkService } from './model/network/network.service';
-import { GalleryCacheService } from './ui/gallery/cache.gallery.service';
-import { FullScreenService } from './ui/gallery/fullscreen.service';
-import { AuthenticationService } from './model/network/authentication.service';
-import { UserMangerSettingsComponent } from './ui/settings/usermanager/usermanager.settings.component';
-import { FrameComponent } from './ui/frame/frame.component';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { LoadingBarModule } from '@ngx-loading-bar/core';
-import { GalleryLightboxMediaComponent } from './ui/gallery/lightbox/media/media.lightbox.gallery.component';
-import { GalleryPhotoLoadingComponent } from './ui/gallery/grid/photo/loading/loading.photo.grid.gallery.component';
-import { GalleryNavigatorComponent } from './ui/gallery/navigator/navigator.gallery.component';
-import { GallerySearchComponent } from './ui/gallery/search/search.gallery.component';
-import { GalleryLightboxComponent } from './ui/gallery/lightbox/lightbox.gallery.component';
-import { GalleryDirectoryComponent } from './ui/gallery/directories/directory/directory.gallery.component';
-import { GalleryGridComponent } from './ui/gallery/grid/grid.gallery.component';
-import { GalleryPhotoComponent } from './ui/gallery/grid/photo/photo.grid.gallery.component';
-import { LoginComponent } from './ui/login/login.component';
-import { AdminComponent } from './ui/admin/admin.component';
-import { GalleryComponent } from './ui/gallery/gallery.component';
-import { StringifyRole } from './pipes/StringifyRolePipe';
-import { GPXFilesFilterPipe } from './pipes/GPXFilesFilterPipe';
-import { GalleryMapComponent } from './ui/gallery/map/map.gallery.component';
-import { GalleryMapLightboxComponent } from './ui/gallery/map/lightbox/lightbox.map.gallery.component';
-import { ThumbnailManagerService } from './ui/gallery/thumbnailManager.service';
-import { OverlayService } from './ui/gallery/overlay.service';
-import { GalleryShareComponent } from './ui/gallery/share/share.gallery.component';
-import { ShareLoginComponent } from './ui/sharelogin/share-login.component';
-import { ShareService } from './ui/gallery/share.service';
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { DatabaseSettingsComponent } from './ui/settings/database/database.settings.component';
-import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NotificationService } from './model/notification.service';
-import { JwBootstrapSwitchNg2Module } from 'jw-bootstrap-switch-ng2';
-import { ClipboardModule } from 'ngx-clipboard';
-import { NavigationService } from './model/navigation.service';
-import { InfoPanelLightboxComponent } from './ui/gallery/lightbox/infopanel/info-panel.lightbox.gallery.component';
-import { MapSettingsComponent } from './ui/settings/map/map.settings.component';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import { ThumbnailSettingsComponent } from './ui/settings/thumbnail/thumbnail.settings.component';
-import { SearchSettingsComponent } from './ui/settings/search/search.settings.component';
-import { SettingsService } from './ui/settings/settings.service';
-import { ShareSettingsComponent } from './ui/settings/share/share.settings.component';
-import { BasicSettingsComponent } from './ui/settings/basic/basic.settings.component';
-import { OtherSettingsComponent } from './ui/settings/other/other.settings.component';
-import {
-  HTTP_INTERCEPTORS,
-  HttpClient,
-  HttpClientModule,
-} from '@angular/common/http';
-import { DefaultUrlSerializer, UrlSerializer, UrlTree } from '@angular/router';
-import { IndexingSettingsComponent } from './ui/settings/indexing/indexing.settings.component';
-import { LanguageComponent } from './ui/language/language.component';
-import { QueryService } from './model/query.service';
-import { IconizeSortingMethod } from './pipes/IconizeSortingMethod';
-import { StringifySortingMethod } from './pipes/StringifySortingMethod';
-import { RandomQueryBuilderGalleryComponent } from './ui/gallery/random-query-builder/random-query-builder.gallery.component';
-import { RandomPhotoSettingsComponent } from './ui/settings/random-photo/random-photo.settings.component';
-import { VideoSettingsComponent } from './ui/settings/video/video.settings.component';
-import { DurationPipe } from './pipes/DurationPipe';
-import { MapService } from './ui/gallery/map/map.service';
-import { MetaFileSettingsComponent } from './ui/settings/metafiles/metafile.settings.component';
-import { ThumbnailLoaderService } from './ui/gallery/thumbnailLoader.service';
-import { FileSizePipe } from './pipes/FileSizePipe';
-import { DuplicateService } from './ui/duplicates/duplicates.service';
-import { DuplicateComponent } from './ui/duplicates/duplicates.component';
-import { DuplicatesPhotoComponent } from './ui/duplicates/photo/photo.duplicates.component';
-import { SeededRandomService } from './model/seededRandom.service';
-import { FacesComponent } from './ui/faces/faces.component';
-import { FacesService } from './ui/faces/faces.service';
-import { FaceComponent } from './ui/faces/face/face.component';
-import { VersionService } from './model/version.service';
-import { DirectoriesComponent } from './ui/gallery/directories/directories.component';
-import { ControlsLightboxComponent } from './ui/gallery/lightbox/controls/controls.lightbox.gallery.component';
-import { FacesSettingsComponent } from './ui/settings/faces/faces.settings.component';
-import { TimepickerModule } from 'ngx-bootstrap/timepicker';
-import { TimeStampDatePickerComponent } from './ui/utils/timestamp-datepicker/datepicker.component';
-import { TimeStampTimePickerComponent } from './ui/utils/timestamp-timepicker/timepicker.component';
-import { PhotoSettingsComponent } from './ui/settings/photo/photo.settings.component';
-import { JobProgressComponent } from './ui/settings/jobs/progress/job-progress.settings.component';
-import { JobsSettingsComponent } from './ui/settings/jobs/jobs.settings.component';
-import { ScheduledJobsService } from './ui/settings/scheduled-jobs.service';
-import { BackendtextService } from './model/backendtext.service';
-import { JobButtonComponent } from './ui/settings/jobs/button/job-button.settings.component';
-import { ErrorInterceptor } from './model/network/helper/error.interceptor';
-import { CSRFInterceptor } from './model/network/helper/csrf.interceptor';
-import { SettingsEntryComponent } from './ui/settings/_abstract/settings-entry/settings-entry.component';
-import { GallerySearchQueryEntryComponent } from './ui/gallery/search/query-enrty/query-entry.search.gallery.component';
-import { StringifySearchQuery } from './pipes/StringifySearchQuery';
-import { AutoCompleteService } from './ui/gallery/search/autocomplete.service';
-import { SearchQueryParserService } from './ui/gallery/search/search-query-parser.service';
-import { GallerySearchFieldBaseComponent } from './ui/gallery/search/search-field-base/search-field-base.gallery.component';
-import { AppRoutingModule } from './app.routing';
-import { CookieService } from 'ngx-cookie-service';
-import { LeafletMarkerClusterModule } from '@asymmetrik/ngx-leaflet-markercluster';
-import { icon, Marker } from 'leaflet';
-import { AlbumsComponent } from './ui/albums/albums.component';
-import { AlbumComponent } from './ui/albums/album/album.component';
-import { AlbumsService } from './ui/albums/albums.service';
-import { GallerySearchQueryBuilderComponent } from './ui/gallery/search/query-builder/query-bulder.gallery.component';
-import { SavedSearchPopupComponent } from './ui/albums/saved-search-popup/saved-search-popup.component';
-import { AlbumsSettingsComponent } from './ui/settings/albums/albums.settings.component';
-import { MarkdownModule } from 'ngx-markdown';
-import { GalleryBlogComponent } from './ui/gallery/blog/blog.gallery.component';
-import { MDFilesFilterPipe } from './pipes/MDFilesFilterPipe';
-import { FileDTOToPathPipe } from './pipes/FileDTOToPathPipe';
-import { BlogService } from './ui/gallery/blog/blog.service';
-import { PhotoFilterPipe } from './pipes/PhotoFilterPipe';
-import { PreviewSettingsComponent } from './ui/settings/preview/preview.settings.component';
-import { GallerySearchFieldComponent } from './ui/gallery/search/search-field/search-field.gallery.component';
-import { GalleryFilterComponent } from './ui/gallery/filter/filter.gallery.component';
-import { GallerySortingService } from './ui/gallery/navigator/sorting.service';
-import { FilterService } from './ui/gallery/filter/filter.service';
+import {Injectable, NgModule} from '@angular/core';
+import {BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig, HammerModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {AppComponent} from './app.component';
+import {UserService} from './model/network/user.service';
+import {ContentService} from './ui/gallery/content.service';
+import {NetworkService} from './model/network/network.service';
+import {GalleryCacheService} from './ui/gallery/cache.gallery.service';
+import {FullScreenService} from './ui/gallery/fullscreen.service';
+import {AuthenticationService} from './model/network/authentication.service';
+import {UserMangerSettingsComponent} from './ui/settings/usermanager/usermanager.settings.component';
+import {FrameComponent} from './ui/frame/frame.component';
+import {LeafletModule} from '@asymmetrik/ngx-leaflet';
+import {LoadingBarModule} from '@ngx-loading-bar/core';
+import {GalleryLightboxMediaComponent} from './ui/gallery/lightbox/media/media.lightbox.gallery.component';
+import {GalleryPhotoLoadingComponent} from './ui/gallery/grid/photo/loading/loading.photo.grid.gallery.component';
+import {GalleryNavigatorComponent} from './ui/gallery/navigator/navigator.gallery.component';
+import {GallerySearchComponent} from './ui/gallery/search/search.gallery.component';
+import {GalleryLightboxComponent} from './ui/gallery/lightbox/lightbox.gallery.component';
+import {GalleryDirectoryComponent} from './ui/gallery/directories/directory/directory.gallery.component';
+import {GalleryGridComponent} from './ui/gallery/grid/grid.gallery.component';
+import {GalleryPhotoComponent} from './ui/gallery/grid/photo/photo.grid.gallery.component';
+import {LoginComponent} from './ui/login/login.component';
+import {AdminComponent} from './ui/admin/admin.component';
+import {GalleryComponent} from './ui/gallery/gallery.component';
+import {StringifyRole} from './pipes/StringifyRolePipe';
+import {GPXFilesFilterPipe} from './pipes/GPXFilesFilterPipe';
+import {GalleryMapComponent} from './ui/gallery/map/map.gallery.component';
+import {GalleryMapLightboxComponent} from './ui/gallery/map/lightbox/lightbox.map.gallery.component';
+import {ThumbnailManagerService} from './ui/gallery/thumbnailManager.service';
+import {OverlayService} from './ui/gallery/overlay.service';
+import {GalleryShareComponent} from './ui/gallery/share/share.gallery.component';
+import {ShareLoginComponent} from './ui/sharelogin/share-login.component';
+import {ShareService} from './ui/gallery/share.service';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import {DatabaseSettingsComponent} from './ui/settings/database/database.settings.component';
+import {ToastrModule} from 'ngx-toastr';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NotificationService} from './model/notification.service';
+import {JwBootstrapSwitchNg2Module} from 'jw-bootstrap-switch-ng2';
+import {ClipboardModule} from 'ngx-clipboard';
+import {NavigationService} from './model/navigation.service';
+import {InfoPanelLightboxComponent} from './ui/gallery/lightbox/infopanel/info-panel.lightbox.gallery.component';
+import {MapSettingsComponent} from './ui/settings/map/map.settings.component';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import {CollapseModule} from 'ngx-bootstrap/collapse';
+import {PopoverModule} from 'ngx-bootstrap/popover';
+import {ThumbnailSettingsComponent} from './ui/settings/thumbnail/thumbnail.settings.component';
+import {SearchSettingsComponent} from './ui/settings/search/search.settings.component';
+import {SettingsService} from './ui/settings/settings.service';
+import {ShareSettingsComponent} from './ui/settings/share/share.settings.component';
+import {BasicSettingsComponent} from './ui/settings/basic/basic.settings.component';
+import {OtherSettingsComponent} from './ui/settings/other/other.settings.component';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
+import {DefaultUrlSerializer, UrlSerializer, UrlTree} from '@angular/router';
+import {IndexingSettingsComponent} from './ui/settings/indexing/indexing.settings.component';
+import {LanguageComponent} from './ui/language/language.component';
+import {QueryService} from './model/query.service';
+import {IconizeSortingMethod} from './pipes/IconizeSortingMethod';
+import {StringifySortingMethod} from './pipes/StringifySortingMethod';
+import {RandomQueryBuilderGalleryComponent} from './ui/gallery/random-query-builder/random-query-builder.gallery.component';
+import {RandomPhotoSettingsComponent} from './ui/settings/random-photo/random-photo.settings.component';
+import {VideoSettingsComponent} from './ui/settings/video/video.settings.component';
+import {DurationPipe} from './pipes/DurationPipe';
+import {MapService} from './ui/gallery/map/map.service';
+import {MetaFileSettingsComponent} from './ui/settings/metafiles/metafile.settings.component';
+import {ThumbnailLoaderService} from './ui/gallery/thumbnailLoader.service';
+import {FileSizePipe} from './pipes/FileSizePipe';
+import {DuplicateService} from './ui/duplicates/duplicates.service';
+import {DuplicateComponent} from './ui/duplicates/duplicates.component';
+import {DuplicatesPhotoComponent} from './ui/duplicates/photo/photo.duplicates.component';
+import {SeededRandomService} from './model/seededRandom.service';
+import {FacesComponent} from './ui/faces/faces.component';
+import {FacesService} from './ui/faces/faces.service';
+import {FaceComponent} from './ui/faces/face/face.component';
+import {VersionService} from './model/version.service';
+import {DirectoriesComponent} from './ui/gallery/directories/directories.component';
+import {ControlsLightboxComponent} from './ui/gallery/lightbox/controls/controls.lightbox.gallery.component';
+import {FacesSettingsComponent} from './ui/settings/faces/faces.settings.component';
+import {TimepickerModule} from 'ngx-bootstrap/timepicker';
+import {TimeStampDatePickerComponent} from './ui/utils/timestamp-datepicker/datepicker.component';
+import {TimeStampTimePickerComponent} from './ui/utils/timestamp-timepicker/timepicker.component';
+import {PhotoSettingsComponent} from './ui/settings/photo/photo.settings.component';
+import {JobProgressComponent} from './ui/settings/jobs/progress/job-progress.settings.component';
+import {JobsSettingsComponent} from './ui/settings/jobs/jobs.settings.component';
+import {ScheduledJobsService} from './ui/settings/scheduled-jobs.service';
+import {BackendtextService} from './model/backendtext.service';
+import {JobButtonComponent} from './ui/settings/jobs/button/job-button.settings.component';
+import {ErrorInterceptor} from './model/network/helper/error.interceptor';
+import {CSRFInterceptor} from './model/network/helper/csrf.interceptor';
+import {SettingsEntryComponent} from './ui/settings/_abstract/settings-entry/settings-entry.component';
+import {GallerySearchQueryEntryComponent} from './ui/gallery/search/query-enrty/query-entry.search.gallery.component';
+import {StringifySearchQuery} from './pipes/StringifySearchQuery';
+import {AutoCompleteService} from './ui/gallery/search/autocomplete.service';
+import {SearchQueryParserService} from './ui/gallery/search/search-query-parser.service';
+import {GallerySearchFieldBaseComponent} from './ui/gallery/search/search-field-base/search-field-base.gallery.component';
+import {AppRoutingModule} from './app.routing';
+import {CookieService} from 'ngx-cookie-service';
+import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster';
+import {icon, Marker} from 'leaflet';
+import {AlbumsComponent} from './ui/albums/albums.component';
+import {AlbumComponent} from './ui/albums/album/album.component';
+import {AlbumsService} from './ui/albums/albums.service';
+import {GallerySearchQueryBuilderComponent} from './ui/gallery/search/query-builder/query-bulder.gallery.component';
+import {SavedSearchPopupComponent} from './ui/albums/saved-search-popup/saved-search-popup.component';
+import {AlbumsSettingsComponent} from './ui/settings/albums/albums.settings.component';
+import {MarkdownModule} from 'ngx-markdown';
+import {GalleryBlogComponent} from './ui/gallery/blog/blog.gallery.component';
+import {MDFilesFilterPipe} from './pipes/MDFilesFilterPipe';
+import {FileDTOToPathPipe} from './pipes/FileDTOToPathPipe';
+import {BlogService} from './ui/gallery/blog/blog.service';
+import {PhotoFilterPipe} from './pipes/PhotoFilterPipe';
+import {PreviewSettingsComponent} from './ui/settings/preview/preview.settings.component';
+import {GallerySearchFieldComponent} from './ui/gallery/search/search-field/search-field.gallery.component';
+import {GalleryFilterComponent} from './ui/gallery/filter/filter.gallery.component';
+import {GallerySortingService} from './ui/gallery/navigator/sorting.service';
+import {FilterService} from './ui/gallery/filter/filter.service';
 
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
   events: string[] = ['pinch'];
   overrides = {
-    pan: { threshold: 1 },
-    swipe: { direction: 31 }, // enable swipe up
-    pinch: { enable: true },
+    pan: {threshold: 1},
+    swipe: {direction: 31}, // enable swipe up
+    pinch: {enable: true}
   };
 }
 
+
 export class CustomUrlSerializer implements UrlSerializer {
-  private defaultUrlSerializer: DefaultUrlSerializer =
-    new DefaultUrlSerializer();
+  private defaultUrlSerializer: DefaultUrlSerializer = new DefaultUrlSerializer();
 
   parse(url: string): UrlTree {
     // Encode parentheses
@@ -149,10 +140,7 @@ export class CustomUrlSerializer implements UrlSerializer {
   }
 
   serialize(tree: UrlTree): string {
-    return this.defaultUrlSerializer
-      .serialize(tree)
-      .replace(/%28/g, '(')
-      .replace(/%29/g, ')');
+    return this.defaultUrlSerializer.serialize(tree).replace(/%28/g, '(').replace(/%29/g, ')');
   }
 }
 
@@ -169,9 +157,10 @@ const iconDefault = icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   tooltipAnchor: [16, -28],
-  shadowSize: [41, 41],
+  shadowSize: [41, 41]
 });
 Marker.prototype.options.icon = iconDefault;
+
 
 @NgModule({
   imports: [
@@ -194,10 +183,9 @@ Marker.prototype.options.icon = iconDefault;
     LoadingBarModule,
     LeafletModule,
     LeafletMarkerClusterModule,
-    MarkdownModule.forRoot({ loader: HttpClient }),
+    MarkdownModule.forRoot({loader: HttpClient}),
   ],
-  declarations: [
-    AppComponent,
+  declarations: [AppComponent,
     LoginComponent,
     ShareLoginComponent,
     GalleryComponent,
@@ -272,13 +260,13 @@ Marker.prototype.options.icon = iconDefault;
     MDFilesFilterPipe,
     StringifySearchQuery,
     FileDTOToPathPipe,
-    PhotoFilterPipe,
+    PhotoFilterPipe
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: CSRFInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: UrlSerializer, useClass: CustomUrlSerializer },
-    { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
+    {provide: HTTP_INTERCEPTORS, useClass: CSRFInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {provide: UrlSerializer, useClass: CustomUrlSerializer},
+    {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig},
     StringifySortingMethod,
     NetworkService,
     ShareService,
@@ -307,8 +295,9 @@ Marker.prototype.options.icon = iconDefault;
     VersionService,
     ScheduledJobsService,
     BackendtextService,
-    CookieService,
+    CookieService
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

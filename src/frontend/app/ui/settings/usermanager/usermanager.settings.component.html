@@ -6,11 +6,11 @@
         class="switch"
         name="enabled"
         switch-on-color="success"
-        [switch-inverse]="true"
+        switch-inverse="true"
         [switch-off-text]="text.Disabled"
         [switch-on-text]="text.Enabled"
-        [switch-handle-width]="100"
-        [switch-label-width]="20"
+        switch-handle-width="100"
+        switch-label-width="20"
         [switch-disabled]="inProgress"
         [(ngModel)]="enabled"
         (changeState)="switched($event)">
@@ -29,31 +29,29 @@
           <th></th>
         </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{user.name}}</td>
-            <td *ngIf="canModifyUser(user)">
-              <select class="form-select" [(ngModel)]="user.role" (change)="updateRole(user)" required>
-                <option *ngFor="let repository of userRoles" [value]="repository.key">
-                  {{repository.value}}
-                </option>
-              </select>
-            </td>
-            <td *ngIf="!canModifyUser(user)">
-              {{user.role | stringifyRole}}
-            </td>
-            <td>
-              <button [disabled]="!canModifyUser(user)" (click)="deleteUser(user)"
-                      [ngClass]="canModifyUser(user)? 'btn-danger':'btn-secondary'"
-                      class="btn float-end">
-                <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        <tr *ngFor="let user of users">
+          <td>{{user.name}}</td>
+          <td *ngIf="canModifyUser(user)">
+            <select class="form-control" [(ngModel)]="user.role" (change)="updateRole(user)" required>
+              <option *ngFor="let repository of userRoles" [value]="repository.key">
+                {{repository.value}}
+              </option>
+            </select>
+          </td>
+          <td *ngIf="!canModifyUser(user)">
+            {{user.role | stringifyRole}}
+          </td>
+          <td>
+            <button [disabled]="!canModifyUser(user)" (click)="deleteUser(user)"
+                    [ngClass]="canModifyUser(user)? 'btn-danger':'btn-secondary'"
+                    class="btn float-right">
+              <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
+            </button>
+          </td>
+        </tr>
       </table>
 
-      <button class="btn btn-primary float-end"
+      <button class="btn btn-primary float-right"
               (click)="initNewUser()" i18n>+ Add user
       </button>
     </ng-container>
@@ -70,7 +68,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="userModalLabel" i18n>Add new User</h5>
-        <button type="button" class="btn-close" (click)="userModal.hide()" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" (click)="userModal.hide()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form #NewUserForm="ngForm">
@@ -78,8 +77,8 @@
           <input type="text" class="form-control" i18n-placeholder placeholder="Username"
                  [(ngModel)]="newUser.name" name="name" required>
           <input type="password" class="form-control" i18n-placeholder placeholder="Password"
-                 [(ngModel)]="newUser.password" name="password" autocomplete="off" required>
-          <select class="form-select" [(ngModel)]="newUser.role" name="role" required>
+                 [(ngModel)]="newUser.password" name="password" autocomplete="off"   required>
+          <select class="form-control" [(ngModel)]="newUser.role" name="role" required>
             <option *ngFor="let repository of userRoles" [value]="repository.key">{{repository.value}}
             </option>
           </select>

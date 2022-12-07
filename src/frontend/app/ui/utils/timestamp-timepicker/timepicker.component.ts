@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-timestamp-timepicker',
   templateUrl: './timepicker.component.html',
 })
 export class TimeStampTimePickerComponent {
+
   timestampValue = 0;
   @Output() timestampChange = new EventEmitter<number>();
 
@@ -32,12 +33,15 @@ export class TimeStampTimePickerComponent {
     }
     this.timestampValue = val;
     this.timestampChange.emit(this.timestampValue);
+
   }
 
   onChange(date: Date | string): void {
     const d = new Date(date);
     this.timestamp = d.getUTCHours() * 60 + d.getUTCMinutes();
   }
+
+
 }
 
 

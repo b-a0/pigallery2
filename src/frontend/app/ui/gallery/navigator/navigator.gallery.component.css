@@ -1,10 +1,21 @@
-.container-fluid{
-  background-color: #e9ecef;
+.nav-container {
+  position: relative;
+  z-index: 2;
+}
+
+.right-side {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .photos-count {
   display: inline-block;
   padding-right: 10px;
+}
+
+.btn-navbar {
 }
 
 
@@ -14,6 +25,9 @@
   display: inline-block;
 }
 
+ol {
+  padding-right: 150px;
+}
 
 .dropdown-menu {
   min-width: 13rem;

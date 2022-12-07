@@ -1,7 +1,7 @@
 {
   "cameraData": {
     "ISO": 500,
-    "exposure": 0.033333,
+    "exposure": 0.03333333333333333,
     "fStop": 2,
     "focalLength": 2.96,
     "make": "HUAWEI",
@@ -9,6 +9,7 @@
   },
   "creationDate": 1460826466000,
   "fileSize": 1980,
+  "orientation": 1,
   "size": {
     "height": 1,
     "width": 1

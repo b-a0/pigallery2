@@ -9,7 +9,7 @@
 
   </app-gallery-search-field-base>
 
-  <div class="input-group-btn col-auto pe-0" style="display: block">
+  <div class="input-group-btn col-auto pr-0" style="display: block">
     <button class="btn btn-light" type="button" (click)="openSearchModal(searchModal)">
       <span class="oi oi-chevron-bottom"></span>
     </button>
@@ -17,11 +17,14 @@
 </div>
 
 
+
+
 <ng-template #searchModal>
   <!-- sharing Modal-->
   <div class="modal-header">
     <h5 class="modal-title" i18n>{{placeholder}}</h5>
-    <button type="button"  class="btn-close"  (click)="hideSearchModal()" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" (click)="hideSearchModal()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">

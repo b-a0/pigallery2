@@ -1,27 +1,22 @@
 import * as cluster from 'cluster';
-import { Worker } from 'cluster';
-import { Logger } from '../../Logger';
-import {
-  DiskManagerTask,
-  ThumbnailTask,
-  WorkerMessage,
-  WorkerTask,
-  WorkerTaskTypes,
-} from './Worker';
-import { ParentDirectoryDTO } from '../../../common/entities/DirectoryDTO';
-import { RendererInput } from './PhotoWorker';
-import { TaskQue, TaskQueEntry } from './TaskQue';
-import { ITaskExecuter } from './TaskExecuter';
-import { DirectoryScanSettings } from './DiskMangerWorker';
+import {Logger} from '../../Logger';
+import {DiskManagerTask, ThumbnailTask, WorkerMessage, WorkerTask, WorkerTaskTypes} from './Worker';
+import {ParentDirectoryDTO} from '../../../common/entities/DirectoryDTO';
+import {RendererInput} from './PhotoWorker';
+import {TaskQue, TaskQueEntry} from './TaskQue';
+import {ITaskExecuter} from './TaskExecuter';
+import {DirectoryScanSettings} from './DiskMangerWorker';
+
 
 interface WorkerWrapper<O> {
-  worker: Worker;
+  worker: cluster.Worker;
   poolTask: TaskQueEntry<WorkerTask, O>;
 }
 
 const LOG_TAG = '[ThreadPool]';
 
 export class ThreadPool<O> {
+
   public static WorkerCount = 0;
   private workers: WorkerWrapper<O>[] = [];
   private taskQue = new TaskQue<WorkerTask, O>();
@@ -63,32 +58,16 @@ export class ThreadPool<O> {
   }
 
   private startWorker(): void {
-    const worker = {
-      poolTask: null,
-      worker: (cluster as any).fork(),
-    } as WorkerWrapper<O>;
+    const worker = {poolTask: null, worker: cluster.fork()} as WorkerWrapper<O>;
     this.workers.push(worker);
     worker.worker.on('online', (): void => {
       ThreadPool.WorkerCount++;
-      Logger.debug(
-        LOG_TAG,
-        'Worker ' + worker.worker.process.pid + ' is online, worker count:',
-        ThreadPool.WorkerCount
-      );
+      Logger.debug(LOG_TAG, 'Worker ' + worker.worker.process.pid + ' is online, worker count:', ThreadPool.WorkerCount);
     });
     worker.worker.on('exit', (code, signal): void => {
       ThreadPool.WorkerCount--;
-      Logger.warn(
-        LOG_TAG,
-        'Worker ' +
-          worker.worker.process.pid +
-          ' died with code: ' +
-          code +
-          ', and signal: ' +
-          signal +
-          ', worker count:',
-        ThreadPool.WorkerCount
-      );
+      Logger.warn(LOG_TAG, 'Worker ' + worker.worker.process.pid + ' died with code: ' + code +
+        ', and signal: ' + signal + ', worker count:', ThreadPool.WorkerCount);
       Logger.debug(LOG_TAG, 'Starting a new worker');
       this.startWorker();
     });
@@ -107,28 +86,20 @@ export class ThreadPool<O> {
       this.run();
     });
   }
+
 }
 
-export class DiskManagerTH
-  extends ThreadPool<ParentDirectoryDTO>
-  implements ITaskExecuter<string, ParentDirectoryDTO>
-{
-  execute(
-    relativeDirectoryName: string,
-    settings: DirectoryScanSettings = {}
-  ): Promise<ParentDirectoryDTO> {
+export class DiskManagerTH extends ThreadPool<ParentDirectoryDTO> implements ITaskExecuter<string, ParentDirectoryDTO> {
+  execute(relativeDirectoryName: string, settings: DirectoryScanSettings = {}): Promise<ParentDirectoryDTO> {
     return super.executeTask({
       type: WorkerTaskTypes.diskManager,
       relativeDirectoryName,
-      settings,
+      settings
     } as DiskManagerTask);
   }
 }
 
-export class ThumbnailTH
-  extends ThreadPool<void>
-  implements ITaskExecuter<RendererInput, void>
-{
+export class ThumbnailTH extends ThreadPool<void> implements ITaskExecuter<RendererInput, void> {
   execute(input: RendererInput): Promise<void> {
     return super.executeTask({
       type: WorkerTaskTypes.thumbnail,

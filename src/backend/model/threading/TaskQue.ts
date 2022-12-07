@@ -1,28 +1,30 @@
-import { Utils } from '../../../common/Utils';
+import {Utils} from '../../../common/Utils';
+
 
 export interface TaskQueEntry<I, O> {
   data: I;
-  promise: {
-    obj: Promise<O> | null;
-    resolve: ((ret: O) => void) | null;
-    reject: ((err: any) => void) | null;
-  };
+  promise: { obj: Promise<O>, resolve: (ret: O) => void, reject: (err: any) => void };
 }
 
+
 export class TaskQue<I, O> {
+
   private tasks: TaskQueEntry<I, O>[] = [];
   private processing: TaskQueEntry<I, O>[] = [];
+
+  constructor() {
+  }
 
   public isEmpty(): boolean {
     return this.tasks.length === 0;
   }
 
   public add(input: I): TaskQueEntry<I, O> {
-    return this.getSameTask(input) || this.putNewTask(input);
+    return (this.getSameTask(input) || this.putNewTask(input));
   }
 
   public get(): TaskQueEntry<I, O> {
-    const task = this.tasks.shift() as TaskQueEntry<I, O>;
+    const task = this.tasks.shift();
     this.processing.push(task);
     return task;
   }
@@ -36,10 +38,8 @@ export class TaskQue<I, O> {
   }
 
   private getSameTask(input: I): TaskQueEntry<I, O> {
-    return (this.tasks.find((t) => Utils.equalsFilter(t.data, input)) ||
-      this.processing.find((t) =>
-        Utils.equalsFilter(t.data, input)
-      )) as TaskQueEntry<I, O>;
+    return this.tasks.find(t => Utils.equalsFilter(t.data, input)) ||
+      this.processing.find(t => Utils.equalsFilter(t.data, input));
   }
 
   private putNewTask(input: I): TaskQueEntry<I, O> {
@@ -48,16 +48,14 @@ export class TaskQue<I, O> {
       promise: {
         obj: null,
         resolve: null,
-        reject: null,
-      },
+        reject: null
+      }
     };
     this.tasks.push(taskEntry);
-    taskEntry.promise.obj = new Promise<O>(
-      (resolve: (ret: O) => void, reject: (err: any) => void) => {
-        taskEntry.promise.reject = reject;
-        taskEntry.promise.resolve = resolve;
-      }
-    );
+    taskEntry.promise.obj = new Promise<O>((resolve: (ret: O) => void, reject: (err: any) => void) => {
+      taskEntry.promise.reject = reject;
+      taskEntry.promise.resolve = resolve;
+    });
     return taskEntry;
   }
 }

@@ -1,9 +1,10 @@
-import { UserDTO, UserRoles } from '../../../../../common/entities/UserDTO';
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {UserDTO, UserRoles} from '../../../../../common/entities/UserDTO';
+import {Column, Entity, PrimaryGeneratedColumn, Unique} from 'typeorm';
 
 @Entity()
 @Unique(['name'])
 export class UserEntity implements UserDTO {
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -16,6 +17,7 @@ export class UserEntity implements UserDTO {
   @Column('smallint')
   role: UserRoles;
 
-  @Column('simple-array', { nullable: true })
+  @Column('simple-array', {nullable: true})
   permissions: string[];
+
 }

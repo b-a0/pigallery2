@@ -1,14 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import * as fs from 'fs';
-import { PhotoProcessing } from '../../model/fileprocessing/PhotoProcessing';
-import { Config } from '../../../common/config/private/Config';
+import {PhotoProcessing} from '../../model/fileprocessing/PhotoProcessing';
+import {Config} from '../../../common/config/private/Config';
 
 export class PhotoConverterMWs {
-  public static async convertPhoto(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+
+  public static async convertPhoto(req: Request, res: Response, next: NextFunction): Promise<any> {
     if (!req.resultPipe) {
       return next();
     }
@@ -16,12 +13,9 @@ export class PhotoConverterMWs {
     if (Config.Client.Media.Photo.Converting.enabled === false) {
       return res.redirect(req.originalUrl.slice(0, -1 * '\\bestFit'.length));
     }
-    const fullMediaPath = req.resultPipe as string;
+    const fullMediaPath = req.resultPipe;
 
-    const convertedVideo = PhotoProcessing.generateConvertedPath(
-      fullMediaPath,
-      Config.Server.Media.Photo.Converting.resolution
-    );
+    const convertedVideo = PhotoProcessing.generateConvertedPath(fullMediaPath, Config.Server.Media.Photo.Converting.resolution);
 
     // check if converted photo exist
     if (fs.existsSync(convertedVideo) === true) {

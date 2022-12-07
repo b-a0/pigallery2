@@ -1,8 +1,5 @@
-import {
-  JobProgressDTO,
-  JobProgressLogDTO,
-  JobProgressStates,
-} from '../../../../common/entities/job/JobProgressDTO';
+import {JobProgressDTO, JobProgressLogDTO, JobProgressStates} from '../../../../common/entities/job/JobProgressDTO';
+
 
 export class JobProgress {
   private steps = {
@@ -16,12 +13,11 @@ export class JobProgress {
     end: null as number,
   };
   private logCounter = 0;
-  private logs: { id: number; timestamp: string; comment: string }[] = [];
+  private logs: { id: number, timestamp: string, comment: string }[] = [];
 
-  constructor(
-    public readonly jobName: string,
-    public readonly HashName: string
-  ) {}
+
+  constructor(public readonly jobName: string, public readonly HashName: string) {
+  }
 
   set OnChange(val: (progress: JobProgress) => void) {
     this.onChange = val;
@@ -82,18 +78,13 @@ export class JobProgress {
   }
 
   onChange = (progress: JobProgress): void => {
-    // abstract function
   };
 
   log(log: string): void {
     while (this.logs.length > 10) {
       this.logs.shift();
     }
-    this.logs.push({
-      id: this.logCounter++,
-      timestamp: new Date().toISOString(),
-      comment: log,
-    });
+    this.logs.push({id: this.logCounter++, timestamp: (new Date()).toISOString(), comment: log});
     this.onChange(this);
   }
 
@@ -104,10 +95,10 @@ export class JobProgress {
       state: this.state,
       time: {
         start: this.time.start,
-        end: this.time.end,
+        end: this.time.end
       },
       logs: this.logs,
-      steps: this.steps,
+      steps: this.steps
     };
   }
 }

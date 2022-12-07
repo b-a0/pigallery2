@@ -11,10 +11,9 @@ import {IndexingManager} from '../../src/backend/model/database/sql/IndexingMana
 import {GalleryManager} from '../../src/backend/model/database/sql/GalleryManager';
 import {Connection} from 'typeorm';
 import {Utils} from '../../src/common/Utils';
-import {TestHelper} from '../TestHelper';
+import {TestHelper} from './unit/model/sql/TestHelper';
 import {VideoDTO} from '../../src/common/entities/VideoDTO';
 import {PhotoDTO} from '../../src/common/entities/PhotoDTO';
-import {Logger} from '../../src/backend/Logger';
 
 declare let describe: any;
 const savedDescribe = describe;
@@ -28,17 +27,14 @@ class IndexingManagerTest extends IndexingManager {
 
 class GalleryManagerTest extends GalleryManager {
 
-  public async getDirIdAndTime(connection: Connection, directoryName: string, directoryParent: string) {
-    return super.getDirIdAndTime(connection, directoryName, directoryParent);
+  public async selectParentDir(connection: Connection, directoryName: string, directoryParent: string): Promise<ParentDirectoryDTO> {
+    return super.selectParentDir(connection, directoryName, directoryParent);
   }
 
-  public async getParentDirFromId(connection: Connection, dir: number): Promise<ParentDirectoryDTO> {
-    return super.getParentDirFromId(connection, dir);
+  public async fillParentDir(connection: Connection, dir: ParentDirectoryDTO): Promise<void> {
+    return super.fillParentDir(connection, dir);
   }
-
 }
-
-const LOG_TAG = 'DBTestHelper';
 
 export class DBTestHelper {
 
@@ -48,7 +44,7 @@ export class DBTestHelper {
     mysql: process.env.TEST_MYSQL !== 'false'
   };
   public static readonly savedDescribe = savedDescribe;
-  public tempDir: string;
+  tempDir: string;
   public readonly testGalleyEntities: {
     dir: ParentDirectoryDTO,
     subDir: SubDirectoryDTO,
@@ -105,6 +101,7 @@ export class DBTestHelper {
           const helper = new DBTestHelper(DatabaseType.mysql);
           savedDescribe('mysql', function(): void {
             this.timeout(99999999); // hint for the test environment
+            // @ts-ignore
             return tests(helper);
           });
         }
@@ -135,15 +132,14 @@ export class DBTestHelper {
     }
 
     const gm = new GalleryManagerTest();
-
-    const dir = await gm.getParentDirFromId(connection,
-      (await gm.getDirIdAndTime(connection, directory.name, path.join(path.dirname('.'), path.sep))).id);
+    const dir = await gm.selectParentDir(connection, directory.name, path.join(path.dirname('.'), path.sep));
+    await gm.fillParentDir(connection, dir);
 
     const populateDir = async (d: DirectoryBaseDTO) => {
       for (let i = 0; i < d.directories.length; i++) {
-        d.directories[i] = await gm.getParentDirFromId(connection,
-          (await gm.getDirIdAndTime(connection, d.directories[i].name,
-            path.join(DiskMangerWorker.pathFromParent(d), path.sep))).id);
+        d.directories[i] = await gm.selectParentDir(connection, d.directories[i].name,
+          path.join(DiskMangerWorker.pathFromParent(d), path.sep));
+        await gm.fillParentDir(connection, d.directories[i] as any);
         await populateDir(d.directories[i]);
       }
     };
@@ -188,15 +184,10 @@ export class DBTestHelper {
     this.testGalleyEntities.subDir = this.testGalleyEntities.dir.directories[0];
     this.testGalleyEntities.subDir2 = this.testGalleyEntities.dir.directories[1];
     this.testGalleyEntities.p = (this.testGalleyEntities.dir.media.filter(m => m.name === this.testGalleyEntities.p.name)[0] as any);
-    this.testGalleyEntities.p.directory = this.testGalleyEntities.dir;
     this.testGalleyEntities.p2 = (this.testGalleyEntities.dir.media.filter(m => m.name === this.testGalleyEntities.p2.name)[0] as any);
-    this.testGalleyEntities.p2.directory = this.testGalleyEntities.dir;
     this.testGalleyEntities.v = (this.testGalleyEntities.dir.media.filter(m => m.name === this.testGalleyEntities.v.name)[0] as any);
-    this.testGalleyEntities.v.directory = this.testGalleyEntities.dir;
     this.testGalleyEntities.p3 = (this.testGalleyEntities.dir.directories[0].media[0] as any);
-    this.testGalleyEntities.p3.directory = this.testGalleyEntities.dir.directories[0];
     this.testGalleyEntities.p4 = (this.testGalleyEntities.dir.directories[1].media[0] as any);
-    this.testGalleyEntities.p2.directory = this.testGalleyEntities.dir.directories[1];
   }
 
   private async initMySQL(): Promise<void> {
@@ -204,20 +195,20 @@ export class DBTestHelper {
   }
 
   private async resetMySQL(): Promise<void> {
-    Logger.debug(LOG_TAG, 'resetting up mysql');
-    await this.clearUpMysql();
+    await ObjectManagers.reset();
+    Config.Server.Database.type = DatabaseType.mysql;
+    Config.Server.Database.mysql.database = 'pigallery2_test';
     const conn = await SQLConnection.getConnection();
+    await conn.query('DROP DATABASE IF EXISTS ' + conn.options.database);
     await conn.query('CREATE DATABASE IF NOT EXISTS ' + conn.options.database);
     await SQLConnection.close();
     await ObjectManagers.InitSQLManagers();
   }
 
   private async clearUpMysql(): Promise<void> {
-    Logger.debug(LOG_TAG, 'clearing up mysql');
     await ObjectManagers.reset();
     Config.Server.Database.type = DatabaseType.mysql;
     Config.Server.Database.mysql.database = 'pigallery2_test';
-    await fs.promises.rm(this.tempDir, {recursive: true, force: true});
     const conn = await SQLConnection.getConnection();
     await conn.query('DROP DATABASE IF EXISTS ' + conn.options.database);
     await SQLConnection.close();
@@ -228,13 +219,15 @@ export class DBTestHelper {
   }
 
   private async resetSQLite(): Promise<void> {
-    Logger.debug(LOG_TAG, 'resetting sqlite');
-    await this.clearUpSQLite();
+    Config.Server.Database.type = DatabaseType.sqlite;
+    Config.Server.Database.dbFolder = this.tempDir;
+    ProjectPath.reset();
+    await ObjectManagers.reset();
+    await fs.promises.rm(this.tempDir, {recursive: true, force: true});
     await ObjectManagers.InitSQLManagers();
   }
 
   private async clearUpSQLite(): Promise<void> {
-    Logger.debug(LOG_TAG, 'clearing up sqlite');
     Config.Server.Database.type = DatabaseType.sqlite;
     Config.Server.Database.dbFolder = this.tempDir;
     ProjectPath.reset();

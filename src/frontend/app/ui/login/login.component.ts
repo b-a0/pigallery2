@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { LoginCredential } from '../../../../common/entities/LoginCredential';
-import { AuthenticationService } from '../../model/network/authentication.service';
-import { ErrorCodes } from '../../../../common/entities/Error';
-import { Config } from '../../../../common/config/public/Config';
-import { NavigationService } from '../../model/navigation.service';
+import {Component, OnInit} from '@angular/core';
+import {LoginCredential} from '../../../../common/entities/LoginCredential';
+import {AuthenticationService} from '../../model/network/authentication.service';
+import {ErrorCodes} from '../../../../common/entities/Error';
+import {Config} from '../../../../common/config/public/Config';
+import {NavigationService} from '../../model/navigation.service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +16,8 @@ export class LoginComponent implements OnInit {
   title: string;
   inProgress = false;
 
-  constructor(
-    private authService: AuthenticationService,
-    private navigation: NavigationService
-  ) {
+  constructor(private authService: AuthenticationService,
+              private navigation: NavigationService) {
     this.loginCredential = new LoginCredential();
     this.title = Config.Client.applicationTitle;
   }

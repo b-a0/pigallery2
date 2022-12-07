@@ -37,12 +37,12 @@
 }
 
 .filter-option .oi.filter-only-selected {
-  color: var(--bs-primary);
+  color: #007bff;
 }
 
 
 .filter-container {
-  margin-top: -0.5rem;
+  margin-top: -1rem;
 }
 
 .filter-container > card-body {
@@ -97,7 +97,7 @@
   left: 0;
   height: 7px;
   border-radius: 14px !important;
-  background-color: var(--bs-primary);
+  background-color: #007bff;
 }
 
 .date-filter-wrapper > div > .thumb {
@@ -110,7 +110,7 @@
   margin-left: -11px;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  background-color: var(--bs-primary);
+  background-color: #007bff;
   border-radius: 50% !important;
   outline: none;
 }
@@ -140,7 +140,7 @@ div.date-filter-wrapper > input[type=range]::-webkit-slider-thumb {
   height: 28px;
   border-radius: 0 !important;
   border: 0 none;
-  background: var(--bs-primary);
+  background: #007bff;
   -webkit-appearance: none;
 }
 

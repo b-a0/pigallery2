@@ -8,73 +8,36 @@
 
 
       <app-settings-entry
+        name="*.gpx files"
+        description="Reads *.gpx files and renders them on the map."
+        i18n-description i18n-name
+        [disabled]="!(settingsService.Settings | async).Client.Map.enabled"
+        [ngModel]="states.gpx">
+      </app-settings-entry>
+
+      <app-settings-entry
         name="Markdown files"
         description="Reads *.md files in a directory and shows the next to the map."
         i18n-description i18n-name
-        [ngModel]="states.client.markdown">
+        [ngModel]="states.markdown">
       </app-settings-entry>
 
       <app-settings-entry
         name="*.pg2conf files"
         description="Reads *.pg2conf files (You can use it for custom sorting and save search (albums))."
         i18n-description i18n-name
-        [ngModel]="states.client.pg2conf">
-      </app-settings-entry>
-
-      <hr/>
-
-      <app-settings-entry
-        name="*.gpx files"
-        description="Reads *.gpx files and renders them on the map."
-        i18n-description i18n-name
-        [disabled]="!(settingsService.Settings | async).Client.Map.enabled"
-        [ngModel]="states.client.gpx">
-      </app-settings-entry>
-
-      <app-settings-entry
-        name="*.gpx compression"
-        description="Enables *.gpx file compression."
-        link="https://github.com/bpatrik/pigallery2/issues/504"
-        linkText="See 504."
-        i18n-description i18n-name
-        [disabled]="!(settingsService.Settings | async).Client.Map.enabled || !states.client.gpx.value"
-        [ngModel]="states.client.GPXCompressing.enabled">
-      </app-settings-entry>
-
-      <app-settings-entry
-        name="OnTheFly *.gpx compression"
-        description="Enables on the fly *.gpx compression."
-        i18n-description i18n-name
-        [simplifiedMode]="simplifiedMode"
-        [disabled]="!(settingsService.Settings | async).Client.Map.enabled || !states.client.GPXCompressing.enabled.value || !states.client.gpx.value"
-        [ngModel]="states.server.GPXCompressing.onTheFly">
+        [ngModel]="states.markdown">
       </app-settings-entry>
 
 
-
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>
-
-      <div [hidden]="!states.client.GPXCompressing.enabled.value || !states.client.gpx.value">
-        <app-settings-job-button class="mt-2 mt-md-0 float-left"
-                                 [soloRun]="true"
-                                 (jobError)="error=$event"
-                                 [allowParallelRun]="false"
-                                 [jobName]="jobName"></app-settings-job-button>
-
-        <ng-container *ngIf="Progress != null">
-          <br/>
-          <hr/>
-          <app-settings-job-progress [progress]="Progress"></app-settings-job-progress>
-        </ng-container>
-
-      </div>
     </div>
   </div>
 

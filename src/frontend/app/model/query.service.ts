@@ -1,29 +1,23 @@
-import { Injectable } from '@angular/core';
-import { ShareService } from '../ui/gallery/share.service';
-import { MediaDTO } from '../../../common/entities/MediaDTO';
-import { QueryParams } from '../../../common/QueryParams';
-import { Utils } from '../../../common/Utils';
-import { ContentService } from '../ui/gallery/content.service';
-import { Config } from '../../../common/config/public/Config';
-import {
-  ParentDirectoryDTO,
-  SubDirectoryDTO,
-} from '../../../common/entities/DirectoryDTO';
+import {Injectable} from '@angular/core';
+import {ShareService} from '../ui/gallery/share.service';
+import {MediaDTO} from '../../../common/entities/MediaDTO';
+import {QueryParams} from '../../../common/QueryParams';
+import {Utils} from '../../../common/Utils';
+import {ContentService} from '../ui/gallery/content.service';
+import {Config} from '../../../common/config/public/Config';
+import {ParentDirectoryDTO, SubDirectoryDTO} from '../../../common/entities/DirectoryDTO';
 
 @Injectable()
 export class QueryService {
-  constructor(
-    private shareService: ShareService,
-    private galleryService: ContentService
-  ) {}
+
+
+  constructor(private shareService: ShareService,
+              private galleryService: ContentService) {
+  }
 
   getMediaStringId(media: MediaDTO): string {
     if (this.galleryService.isSearchResult()) {
-      return Utils.concatUrls(
-        media.directory.path,
-        media.directory.name,
-        media.name
-      );
+      return Utils.concatUrls(media.directory.path, media.directory.name, media.name);
     } else {
       return media.name;
     }
@@ -36,33 +30,27 @@ export class QueryService {
     }
     if (Config.Client.Sharing.enabled === true) {
       if (this.shareService.isSharing()) {
-        query[QueryParams.gallery.sharingKey_query] =
-          this.shareService.getSharingKey();
+        query[QueryParams.gallery.sharingKey_query] = this.shareService.getSharingKey();
       }
     }
     return query;
   }
 
-  getParamsForDirs(directory: ParentDirectoryDTO | SubDirectoryDTO): {
-    [key: string]: any;
-  } {
+  getParamsForDirs(directory: ParentDirectoryDTO | SubDirectoryDTO): { [key: string]: any } {
     const params: { [key: string]: any } = {};
     if (Config.Client.Sharing.enabled === true) {
       if (this.shareService.isSharing()) {
-        params[QueryParams.gallery.sharingKey_query] =
-          this.shareService.getSharingKey();
+        params[QueryParams.gallery.sharingKey_query] = this.shareService.getSharingKey();
       }
     }
-    if (
-      directory &&
-      directory.lastModified &&
-      directory.lastScanned &&
-      !directory.isPartial
-    ) {
+    if (directory && directory.lastModified && directory.lastScanned &&
+      !directory.isPartial) {
       params[QueryParams.gallery.knownLastModified] = directory.lastModified;
       params[QueryParams.gallery.knownLastScanned] = directory.lastScanned;
     }
 
     return params;
+
   }
+
 }

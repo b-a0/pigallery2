@@ -23,7 +23,7 @@ import {
 } from '../../../../../src/common/entities/SearchQueryDTO';
 import {IndexingManager} from '../../../../../src/backend/model/database/sql/IndexingManager';
 import {DirectoryBaseDTO, ParentDirectoryDTO, SubDirectoryDTO} from '../../../../../src/common/entities/DirectoryDTO';
-import {TestHelper} from '../../../../TestHelper';
+import {TestHelper} from './TestHelper';
 import {ObjectManagers} from '../../../../../src/backend/model/ObjectManagers';
 import {GalleryManager} from '../../../../../src/backend/model/database/sql/GalleryManager';
 import {Connection} from 'typeorm';
@@ -34,9 +34,7 @@ import {Config} from '../../../../../src/common/config/private/Config';
 import {SearchQueryParser} from '../../../../../src/common/SearchQueryParser';
 import {FileDTO} from '../../../../../src/common/entities/FileDTO';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const deepEqualInAnyOrder = require('deep-equal-in-any-order');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const chai = require('chai');
 
 chai.use(deepEqualInAnyOrder);
@@ -67,12 +65,12 @@ class SearchManagerTest extends SearchManager {
 
 class GalleryManagerTest extends GalleryManager {
 
-  public async getDirIdAndTime(connection: Connection, directoryName: string, directoryParent: string) {
-    return super.getDirIdAndTime(connection, directoryName, directoryParent);
+  public async selectParentDir(connection: Connection, directoryName: string, directoryParent: string): Promise<ParentDirectoryDTO> {
+    return super.selectParentDir(connection, directoryName, directoryParent);
   }
 
-  public async getParentDirFromId(connection: Connection, dir: number): Promise<ParentDirectoryDTO> {
-    return super.getParentDirFromId(connection, dir);
+  public async fillParentDir(connection: Connection, dir: ParentDirectoryDTO): Promise<void> {
+    return super.fillParentDir(connection, dir);
   }
 }
 
@@ -118,17 +116,11 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
     subDir = dir.directories[0];
     subDir2 = dir.directories[1];
     p = (dir.media.filter(m => m.name === p.name)[0] as any);
-    p.directory = dir;
     p2 = (dir.media.filter(m => m.name === p2.name)[0] as any);
-    p2.directory = dir;
     gpx = (dir.metaFile[0] as any);
-    gpx.directory = dir;
     v = (dir.media.filter(m => m.name === v.name)[0] as any);
-    v.directory = dir;
     p4 = (dir.directories[1].media[0] as any);
-    p4.directory = dir.directories[1];
     pFaceLess = (dir.directories[0].media[0] as any);
-    pFaceLess.directory = dir.directories[0];
   };
 
   const setUpSqlDB = async () => {
@@ -1047,7 +1039,7 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
         .to.deep.equalInAnyOrder(removeDir({
         searchQuery: query,
         directories: [],
-        media: [p, p2, p4],
+        media: [p, p2, p4, v],
         metaFile: [],
         resultOverflow: false
       } as SearchResultDTO));
@@ -1075,7 +1067,8 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
       ObjectManagers.getInstance().LocationManager.getGPSData = async (): Promise<GPSMetadata> => {
         return {
           longitude: 10,
-          latitude: 10
+          latitude: 10,
+          altitude: 0
         };
       };
 
@@ -1157,7 +1150,7 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
     });
 
     /**
-     * flattenSameOfQueries  converts some-of queries to AND and OR queries
+     * flattenSameOfQueries converts converts some-of querries to AND and OR queries
      * E.g.:
      * 2-of:(A B C) to (A and (B or C)) or (B and C)
      * this tests makes sure that all queries has at least 2 constraints
@@ -1177,8 +1170,13 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
             }
             return depth;
           }
-          // it's an OR
+          // its an or
           const lengths = (q as SearchListQuery).list.map(l => shortestDepth(l)).sort();
+
+          if (lengths[0] !== lengths[lengths.length - 1]) {
+            for (const l of (q as SearchListQuery).list) {
+            }
+          }
           return lengths[0];
         }
         return 1;
@@ -1193,7 +1191,7 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
         }
       };
 
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      // tslint:disable-next-line:prefer-for-of
       for (let i = 1; i < alphabet.length / 2; ++i) {
         const query: SomeOfSearchQuery = {
           type: SearchQueryTypes.SOME_OF,
@@ -1243,7 +1241,9 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
           name: subDir.name,
           path: subDir.path
         },
-        name: pFaceLess.name
+        name: pFaceLess.name,
+        readyIcon: false,
+        readyThumbnails: []
       } as any;
       const query = {
         text: subDir.name,
@@ -1288,7 +1288,7 @@ describe('SearchManager', (sqlHelper: DBTestHelper) => {
       type: SearchQueryTypes.keyword
     } as TextSearch;
 
-    // eslint-disable-next-line
+    // tslint:disable-next-line
     expect(await sm.getRandomPhoto(query)).to.not.exist;
 
     query = ({

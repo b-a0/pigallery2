@@ -48,21 +48,21 @@
               i18n>App version:</span>&nbsp;<span>{{'v' + ((settingsService.settings | async).Server.Environment.appVersion || '----')}}</span>
           </a>
         </div>
-        <div class="mb-1">
-          <label class="control-label align-self-end me-2" for="simplifiedMode" i18n>Mode</label>
+        <div class="form-group">
+          <label class="control-label align-self-end mr-2" for="simplifiedMode" i18n>Mode</label>
           <bSwitch
             id="simplifiedMode"
             class="switch"
             name="simplifiedMode"
             switch-off-color="warning"
             switch-on-color="primary"
-            [switch-inverse]="true"
+            switch-inverse="true"
             switch-off-text="Advanced"
             switch-on-text="Simplified"
             i18n-switch-off-text
             i18n-switch-on-text
-            [switch-handle-width]="100"
-            [switch-label-width]="20"
+            switch-handle-width="100"
+            switch-label-width="20"
             [(ngModel)]="simplifiedMode"
             (ngModelChange)="modeToggle()">
           </bSwitch>
@@ -70,18 +70,18 @@
       </div>
     </div>
 
-    <div class="row mt-2">
+    <div class="row">
       <div class="col-md-2 ">
         <nav class="nav flex-column sticky-top">
           <div class="card">
-            <div class="card-body text-md-start text-center align-content-md-start align-content-center">
+            <div class="card-body text-md-left text-center align-content-md-start align-content-center">
               <h5 i18n="title of left card in settings page that contains settings contents" class="card-title">
                 Menu</h5>
-              <button class="btn btn-link nav-link text-start py-md-1 px-md-0"
+              <button class="btn btn-link nav-link  text-md-left py-md-1 px-md-0"
                       *ngFor="let s of contents; let i=index;"
                       (click)="scrollTo(i)"
                       [hidden]="!s.HasAvailableSettings">
-                <span class="oi oi-{{s.icon}}"></span> {{s.Name}}
+               <span class="oi oi-{{s.icon}}"></span> {{s.Name}}
               </button>
             </div>
           </div>
@@ -142,7 +142,7 @@
       </div>
     </div>
 
-    <div class="row mb-3">
+    <div class="row mb-2">
       <div class="col-12">
         <div class="text-right">
           <ng-container i18n>Up time</ng-container><!--

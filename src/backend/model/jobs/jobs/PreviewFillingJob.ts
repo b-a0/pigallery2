@@ -1,16 +1,14 @@
-import { ObjectManagers } from '../../ObjectManagers';
-import {
-  ConfigTemplateEntry,
-  DefaultsJobs,
-} from '../../../../common/entities/job/JobDTO';
-import { Job } from './Job';
-import { Config } from '../../../../common/config/private/Config';
-import { DatabaseType } from '../../../../common/config/private/PrivateConfig';
+import {ObjectManagers} from '../../ObjectManagers';
+import {ConfigTemplateEntry, DefaultsJobs} from '../../../../common/entities/job/JobDTO';
+import {Job} from './Job';
+import {Config} from '../../../../common/config/private/Config';
+import {DatabaseType} from '../../../../common/config/private/PrivateConfig';
+
 
 export class PreviewFillingJob extends Job {
   public readonly Name = DefaultsJobs[DefaultsJobs['Preview Filling']];
   public readonly ConfigTemplate: ConfigTemplateEntry[] = null;
-  directoryToSetPreview: { id: number; name: string; path: string }[] = null;
+  directoryToSetPreview: { id: number, name: string, path: string }[] = null;
   status: 'Persons' | 'Albums' | 'Directory' = 'Persons';
 
   public get Supported(): boolean {
@@ -18,14 +16,12 @@ export class PreviewFillingJob extends Job {
   }
 
   protected async init(): Promise<void> {
-    // abstract function
   }
 
   protected async step(): Promise<boolean> {
     if (!this.directoryToSetPreview) {
       this.Progress.log('Loading Directories to process');
-      this.directoryToSetPreview =
-        await ObjectManagers.getInstance().PreviewManager.getPartialDirsWithoutPreviews();
+      this.directoryToSetPreview = await ObjectManagers.getInstance().PreviewManager.getPartialDirsWithoutPreviews();
       this.Progress.Left = this.directoryToSetPreview.length + 2;
       return true;
     }
@@ -61,8 +57,7 @@ export class PreviewFillingJob extends Job {
 
   private async stepDirectoryPreview(): Promise<boolean> {
     if (this.directoryToSetPreview.length === 0) {
-      this.directoryToSetPreview =
-        await ObjectManagers.getInstance().PreviewManager.getPartialDirsWithoutPreviews();
+      this.directoryToSetPreview = await ObjectManagers.getInstance().PreviewManager.getPartialDirsWithoutPreviews();
       // double check if there is really no more
       if (this.directoryToSetPreview.length > 0) {
         return true; // continue
@@ -71,13 +66,14 @@ export class PreviewFillingJob extends Job {
       return false;
     }
     const directory = this.directoryToSetPreview.shift();
-    this.Progress.log('Setting preview: ' + directory.path + directory.name);
+    this.Progress.log('Setting preview: ' + directory.path  + directory.name);
     this.Progress.Left = this.directoryToSetPreview.length;
 
-    await ObjectManagers.getInstance().PreviewManager.setAndGetPreviewForDirectory(
-      directory
-    );
+    await ObjectManagers.getInstance().PreviewManager.setAndGetPreviewForDirectory(directory);
     this.Progress.Processed++;
     return true;
+
   }
+
+
 }

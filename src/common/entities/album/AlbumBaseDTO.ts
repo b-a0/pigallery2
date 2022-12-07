@@ -1,4 +1,4 @@
-import { PreviewPhotoDTO } from '../PhotoDTO';
+import {PreviewPhotoDTO} from '../PhotoDTO';
 
 export interface AlbumBaseDTO {
   id: number;

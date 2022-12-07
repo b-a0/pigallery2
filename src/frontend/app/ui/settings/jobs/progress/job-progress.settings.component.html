@@ -16,17 +16,16 @@
     {{State}}
   </div>
   <div class="col-md-2 col-4">
-    <button class="btn btn-secondary float-end" (click)="openModal(template)">
+    <button class="btn btn-secondary float-right" (click)="openModal(template)">
       <span class="oi oi-resize-both"></span>
     </button>
   </div>
 </div>
 <div *ngIf="Running">
 
-  <div class="input-group mb-1">
+  <div class="input-group form-group">
     <input
-      *ngIf="progress.state === JobProgressStates.running && progress.logs.length > 0" type="text" class="form-control"
-      disabled
+      *ngIf="progress.state === JobProgressStates.running && progress.logs.length > 0" type="text" class="form-control" disabled
       [ngModel]="progress.logs[progress.logs.length-1].comment" name="details">
     <input
       *ngIf="progress.state === JobProgressStates.cancelling" type="text" class="form-control" disabled
@@ -40,7 +39,7 @@
   </div>
 
 
-  <div class="mb-1 row progress-row ">
+  <div class="form-group row progress-row ">
     <div class="col-6 col-md-2 col-lg-1 text-md-right order-md-0" title="time elapsed"
          i18n-title>{{TimeElapsed| duration:':'}}</div>
     <div class="col-6 col-md-2 col-lg-1 order-md-2 text-right text-md-left" title="duration"
@@ -72,25 +71,18 @@
 <!-- Modal -->
 <ng-template #template>
   <div class="modal-header">
-    <h5 class="modal-title" >{{Name}}</h5>
-    <button type="button"  class="btn-close"  (click)="modalRef.hide()" data-dismiss="modal" aria-label="Close">
+    <h4 class="modal-title pull-left">{{Name}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <div class="container">
       <div class="row">
-        <div class="col-md-3 col-6">
-          <ng-container i18n>Processed</ng-container>
-          : {{progress.steps.processed}}</div>
-        <div class="col-md-3 col-6">
-          <ng-container i18n>Skipped</ng-container>
-          : {{progress.steps.skipped}}</div>
-        <div class="col-md-3 col-6">
-          <ng-container i18n>Left</ng-container>
-          : {{progress.steps.all - progress.steps.skipped - progress.steps.processed}}</div>
-        <div class="col-md-3 col-6">
-          <ng-container i18n>All</ng-container>
-          : {{progress.steps.all}}</div>
+        <div class="col-md-3 col-6"><ng-container i18n>Processed</ng-container>: {{progress.steps.processed}}</div>
+        <div class="col-md-3 col-6"><ng-container i18n>Skipped</ng-container>: {{progress.steps.skipped}}</div>
+        <div class="col-md-3 col-6"><ng-container i18n>Left</ng-container>: {{progress.steps.all - progress.steps.skipped - progress.steps.processed}}</div>
+        <div class="col-md-3 col-6"><ng-container i18n>All</ng-container>: {{progress.steps.all}}</div>
       </div>
       <div class="row  mt-3 mb-3">
         <div class="progress col-12">

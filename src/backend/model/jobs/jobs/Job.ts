@@ -1,13 +1,9 @@
-import { Logger } from '../../../Logger';
-import { IJob } from './IJob';
-import {
-  ConfigTemplateEntry,
-  JobDTO,
-  JobDTOUtils,
-} from '../../../../common/entities/job/JobDTO';
-import { JobProgress } from './JobProgress';
-import { IJobListener } from './IJobListener';
-import { JobProgressStates } from '../../../../common/entities/job/JobProgressDTO';
+import {Logger} from '../../../Logger';
+import {IJob} from './IJob';
+import {ConfigTemplateEntry, JobDTO, JobDTOUtils} from '../../../../common/entities/job/JobDTO';
+import {JobProgress} from './JobProgress';
+import {IJobListener} from './IJobListener';
+import {JobProgressStates} from '../../../../common/entities/job/JobProgressDTO';
 
 declare const process: any;
 declare const global: any;
@@ -33,54 +29,36 @@ export abstract class Job<T = void> implements IJob<T> {
 
   public abstract get ConfigTemplate(): ConfigTemplateEntry[];
 
+
   public get Progress(): JobProgress {
     return this.progress;
   }
 
   public get InProgress(): boolean {
-    return (
-      this.Progress !== null &&
-      (this.Progress.State === JobProgressStates.running ||
-        this.Progress.State === JobProgressStates.cancelling)
-    );
+    return this.Progress !== null && (this.Progress.State === JobProgressStates.running ||
+      this.Progress.State === JobProgressStates.cancelling);
   }
 
-  public start(
-    config: T,
-    soloRun = false,
-    allowParallelRun = false
-  ): Promise<void> {
+  public start(config: T, soloRun = false, allowParallelRun = false): Promise<void> {
     if (this.InProgress === false && this.Supported === true) {
-      Logger.info(
-        LOG_TAG,
-        'Running job ' + (soloRun === true ? 'solo' : '') + ': ' + this.Name
-      );
+      Logger.info(LOG_TAG, 'Running job ' + (soloRun === true ? 'solo' : '') + ': ' + this.Name);
       this.soloRun = soloRun;
       this.allowParallelRun = allowParallelRun;
       this.config = config;
-      this.progress = new JobProgress(
-        this.Name,
-        JobDTOUtils.getHashName(this.Name, this.config)
-      );
+      this.progress = new JobProgress(this.Name, JobDTOUtils.getHashName(this.Name, this.config));
       this.progress.OnChange = this.jobListener.onProgressUpdate;
       const pr = new Promise<void>((resolve): void => {
         this.prResolve = resolve;
       });
       this.init().catch(console.error);
       this.run();
-      if (!this.IsInstant) {
-        // if instant, wait for execution, otherwise, return right away
+      if (!this.IsInstant) { // if instant, wait for execution, otherwise, return right away
         return Promise.resolve();
       }
       return pr;
     } else {
-      Logger.info(
-        LOG_TAG,
-        'Job already running or not supported: ' + this.Name
-      );
-      return Promise.reject(
-        'Job already running or not supported: ' + this.Name
-      );
+      Logger.info(LOG_TAG, 'Job already running or not supported: ' + this.Name);
+      return Promise.reject('Job already running or not supported: ' + this.Name);
     }
   }
 
@@ -95,7 +73,7 @@ export abstract class Job<T = void> implements IJob<T> {
   public toJSON(): JobDTO {
     return {
       Name: this.Name,
-      ConfigTemplate: this.ConfigTemplate,
+      ConfigTemplate: this.ConfigTemplate
     };
   }
 
@@ -132,15 +110,11 @@ export abstract class Job<T = void> implements IJob<T> {
   private run(): void {
     process.nextTick(async (): Promise<void> => {
       try {
-        if (
-          this.Progress == null ||
-          this.Progress.State !== JobProgressStates.running
-        ) {
+        if (this.Progress == null || this.Progress.State !== JobProgressStates.running) {
           this.onFinish();
           return;
         }
-        if ((await this.step()) === false) {
-          // finished
+        if (await this.step() === false) { // finished
           this.onFinish();
           return;
         }

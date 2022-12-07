@@ -8,14 +8,14 @@
           class="switch"
           name="enabled"
           switch-on-color="success"
-          [switch-inverse]="true"
+          switch-inverse="true"
           switch-off-text="Disabled"
           switch-on-text="Enabled"
           i18n-switch-off-text
           i18n-switch-on-text
           [switch-disabled]="inProgress || !settingsService.isSupported()"
-          [switch-handle-width]="100"
-          [switch-label-width]="20"
+          switch-handle-width="100"
+          switch-label-width="20"
           [(ngModel)]="states.enabled.value">
         </bSwitch>
       </div>
@@ -42,11 +42,11 @@
       <div class="panel-info" *ngIf="(!states.enabled.value && !settingsService.isSupported())" i18n>
         Random Photo is not supported with these settings
       </div>
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

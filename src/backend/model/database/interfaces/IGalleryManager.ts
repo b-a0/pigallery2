@@ -1,10 +1,10 @@
-import { ParentDirectoryDTO } from '../../../../common/entities/DirectoryDTO';
-import { IObjectManager } from './IObjectManager';
+import {ParentDirectoryDTO} from '../../../../common/entities/DirectoryDTO';
+import {IObjectManager} from './IObjectManager';
 
 export interface IGalleryManager extends IObjectManager {
-  listDirectory(
-    relativeDirectoryName: string,
-    knownLastModified?: number,
-    knownLastScanned?: number
-  ): Promise<ParentDirectoryDTO>;
+  listDirectory(relativeDirectoryName: string,
+                knownLastModified?: number,
+                knownLastScanned?: number): Promise<ParentDirectoryDTO>;
+
+
 }

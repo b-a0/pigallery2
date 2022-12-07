@@ -1,31 +1,26 @@
-import { Injectable } from '@angular/core';
-import { NetworkService } from '../../../model/network/network.service';
-import { SettingsService } from '../settings.service';
-import { AbstractSettingsService } from '../_abstract/abstract.settings.service';
-import { DatabaseType } from '../../../../../common/config/private/PrivateConfig';
-import { ClientSearchConfig } from '../../../../../common/config/public/ClientConfig';
+import {Injectable} from '@angular/core';
+import {NetworkService} from '../../../model/network/network.service';
+import {SettingsService} from '../settings.service';
+import {AbstractSettingsService} from '../_abstract/abstract.settings.service';
+import {DatabaseType, ServerConfig} from '../../../../../common/config/private/PrivateConfig';
+import {ClientConfig, ClientSearchConfig} from '../../../../../common/config/public/ClientConfig';
 
 @Injectable()
 export class SearchSettingsService extends AbstractSettingsService<ClientSearchConfig> {
-  constructor(
-    private networkService: NetworkService,
-    settingsService: SettingsService
-  ) {
+  constructor(private networkService: NetworkService,
+              settingsService: SettingsService) {
     super(settingsService);
   }
 
   showInSimplifiedMode(): boolean {
     return false;
   }
-
   public isSupported(): boolean {
-    return (
-      this.settingsService.settings.value.Server.Database.type !==
-      DatabaseType.memory
-    );
+    return this.settingsService.settings.value.Server.Database.type !== DatabaseType.memory;
   }
 
   public updateSettings(settings: ClientSearchConfig): Promise<void> {
-    return this.networkService.putJson('/settings/search', { settings });
+    return this.networkService.putJson('/settings/search', {settings});
   }
+
 }

@@ -1,6 +1,6 @@
 <div class="input-group">
   <input type="text"
-         class="form-control search-text rounded-0"
+         class="form-control search-text"
          [placeholder]="placeholder"
          (keyup)="onSearchChange($event)"
          (blur)="onFocusLost()"
@@ -13,14 +13,16 @@
          (scroll)="Scrolled()"
          (selectionchange)="Scrolled()"
          #name="ngModel"
+         size="30"
          ngControl="search"
          name="srch-term"
          id="srch-term"
          #SearchField
          autocomplete="off">
   <input type="text"
-         class="form-control search-hint rounded-0"
+         class="form-control search-hint"
          [ngModel]="SearchHint"
+         size="30"
          name="srch-term-hint"
          id="srch-term-hint"
          #SearchHintField
@@ -29,7 +31,7 @@
 
   <div class="autocomplete-list" *ngIf="autoCompleteRenders.length > 0"
        (mouseover)="setMouseOverAutoComplete(true)" (mouseout)="setMouseOverAutoComplete(false)">
-    <div class="autocomplete-item text-start"
+    <div class="autocomplete-item"
          [ngClass]="{'autocomplete-item-selected': highlightedAutoCompleteItem === i}"
          (mouseover)="setMouseOverAutoCompleteItem(i)"
          (click)="searchAutoComplete(item)"
@@ -45,7 +47,7 @@
                      <span *ngSwitchCase="SearchQueryTypes.distance" class="oi oi-map-marker"></span>
                     </span>
         {{item.preText}}<strong>{{item.highLightText}}</strong>{{item.postText}}
-        <span class="oi oi-chevron-right insert-button float-end" (click)="applyAutoComplete(item)"
+        <span class="oi oi-chevron-right insert-button float-right" (click)="applyAutoComplete(item)"
               title="Insert"
               i18n-title>
         </span>

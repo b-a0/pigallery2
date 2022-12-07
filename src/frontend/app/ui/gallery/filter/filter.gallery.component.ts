@@ -1,10 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { FilterOption, FilterService, SelectedFilter } from './filter.service';
-import {
-  OnDestroy,
-  OnInit,
-} from '../../../../../../node_modules/@angular/core';
+import {Component} from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {FilterOption, FilterService, SelectedFilter} from './filter.service';
+import {OnDestroy, OnInit} from '../../../../../../node_modules/@angular/core';
 
 @Component({
   selector: 'app-gallery-filter',
@@ -24,34 +21,24 @@ export class GalleryFilterComponent implements OnInit, OnDestroy {
   }
 
   get MinDatePrc(): number {
-    return (
-      ((this.ActiveFilters.dateFilter.minFilter -
-        this.ActiveFilters.dateFilter.minDate) /
-        (this.ActiveFilters.dateFilter.maxDate -
-          this.ActiveFilters.dateFilter.minDate)) *
-      100
-    );
+    return ((this.ActiveFilters.dateFilter.minFilter - this.ActiveFilters.dateFilter.minDate) /
+      (this.ActiveFilters.dateFilter.maxDate - this.ActiveFilters.dateFilter.minDate)) * 100;
   }
 
   get MaxDatePrc(): number {
-    return (
-      ((this.ActiveFilters.dateFilter.maxFilter -
-        this.ActiveFilters.dateFilter.minDate) /
-        (this.ActiveFilters.dateFilter.maxDate -
-          this.ActiveFilters.dateFilter.minDate)) *
-      100
-    );
+    return ((this.ActiveFilters.dateFilter.maxFilter - this.ActiveFilters.dateFilter.minDate) /
+      (this.ActiveFilters.dateFilter.maxDate - this.ActiveFilters.dateFilter.minDate)) * 100;
   }
 
   get ActiveFilters(): {
-    filtersVisible: boolean;
+    filtersVisible: boolean,
     dateFilter: {
-      minDate: number;
-      maxDate: number;
-      minFilter: number;
-      maxFilter: number;
-    };
-    selectedFilters: SelectedFilter[];
+      minDate: number,
+      maxDate: number,
+      minFilter: number,
+      maxFilter: number
+    },
+    selectedFilters: SelectedFilter[]
   } {
     return this.filterService.activeFilters.value;
   }
@@ -61,6 +48,7 @@ export class GalleryFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     this.filterService.setShowingFilters(true);
   }
 
@@ -79,50 +67,28 @@ export class GalleryFilterComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  toggleSelectOnly(
-    filter: SelectedFilter,
-    option: FilterOption,
-    event: MouseEvent
-  ): void {
+  toggleSelectOnly(filter: SelectedFilter, option: FilterOption, event: MouseEvent): void {
     if (this.isOnlySelected(filter, option)) {
-      filter.options.forEach((o) => (o.selected = true));
+      filter.options.forEach(o => o.selected = true);
     } else {
-      filter.options.forEach((o) => (o.selected = o === option));
+      filter.options.forEach(o => o.selected = (o === option));
     }
     event.stopPropagation();
     this.filterService.onFilterChange();
   }
 
   newMinDate($event: Event): void {
-    const diff =
-      (this.ActiveFilters.dateFilter.maxDate -
-        this.ActiveFilters.dateFilter.minDate) *
-      0.01;
-    if (
-      this.ActiveFilters.dateFilter.minFilter >
-      this.ActiveFilters.dateFilter.maxFilter - diff
-    ) {
-      this.ActiveFilters.dateFilter.minFilter = Math.max(
-        this.ActiveFilters.dateFilter.maxFilter - diff,
-        this.ActiveFilters.dateFilter.minDate
-      );
+    const diff = (this.ActiveFilters.dateFilter.maxDate - this.ActiveFilters.dateFilter.minDate) * 0.01;
+    if (this.ActiveFilters.dateFilter.minFilter > this.ActiveFilters.dateFilter.maxFilter - diff) {
+      this.ActiveFilters.dateFilter.minFilter = Math.max(this.ActiveFilters.dateFilter.maxFilter - diff, this.ActiveFilters.dateFilter.minDate);
     }
     this.filterService.onFilterChange();
   }
 
   newMaxDate($event: Event): void {
-    const diff =
-      (this.ActiveFilters.dateFilter.maxDate -
-        this.ActiveFilters.dateFilter.minDate) *
-      0.01;
-    if (
-      this.ActiveFilters.dateFilter.maxFilter <
-      this.ActiveFilters.dateFilter.minFilter + diff
-    ) {
-      this.ActiveFilters.dateFilter.maxFilter = Math.min(
-        this.ActiveFilters.dateFilter.minFilter + diff,
-        this.ActiveFilters.dateFilter.maxDate
-      );
+    const diff = (this.ActiveFilters.dateFilter.maxDate - this.ActiveFilters.dateFilter.minDate) * 0.01;
+    if (this.ActiveFilters.dateFilter.maxFilter < this.ActiveFilters.dateFilter.minFilter + diff) {
+      this.ActiveFilters.dateFilter.maxFilter = Math.min(this.ActiveFilters.dateFilter.minFilter + diff, this.ActiveFilters.dateFilter.maxDate);
     }
     this.filterService.onFilterChange();
   }

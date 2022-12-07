@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-inferrable-types */
+/* tslint:disable:no-inferrable-types */
 import 'reflect-metadata';
 import {SortingMethods} from '../../entities/SortingMethods';
 import {UserRoles} from '../../entities/UserDTO';
 import {ConfigProperty, SubConfigClass} from 'typeconfig/common';
 import {IPrivateConfig} from '../private/PrivateConfig';
 
+
 export enum MapProviders {
-  OpenStreetMap = 1,
-  Mapbox = 2,
-  Custom = 3,
+  OpenStreetMap = 1, Mapbox = 2, Custom = 3
 }
 
 @SubConfigClass()
@@ -33,18 +32,16 @@ export class ClientSearchConfig {
   AutoComplete: AutoCompleteConfig = new AutoCompleteConfig();
   @ConfigProperty({type: 'unsignedInt'})
   maxMediaResult: number = 10000;
-  @ConfigProperty({
-    description: 'Search returns also with directories, not just media',
-  })
+  @ConfigProperty({description: 'Search returns also with directories, not just media'})
   listDirectories: boolean = false;
   @ConfigProperty({
-    description:
-      'Search also returns with metafiles from directories that contain a media file of the matched search result',
+    description: 'Search also returns with metafiles from directories that contain a media file of the matched search result'
   })
   listMetafiles: boolean = true;
   @ConfigProperty({type: 'unsignedInt'})
   maxDirectoryResult: number = 200;
 }
+
 
 @SubConfigClass()
 export class ClientAlbumConfig {
@@ -81,14 +78,10 @@ export class ClientMapConfig {
       if (value === false) {
         config.Client.MetaFile.gpx = false;
       }
-    },
+    }
   })
   enabled: boolean = true;
-  @ConfigProperty({
-    type: 'unsignedInt',
-    description:
-      'Maximum number of markers to be shown on the map preview on the gallery page.',
-  })
+  @ConfigProperty({type: 'unsignedInt', description: 'Maximum number of markers to be shown on the map preview on the gallery page.'})
   maxPreviewMarkers: number = 50;
   @ConfigProperty()
   useImageMarkers: boolean = true;
@@ -110,24 +103,6 @@ export class ClientThumbnailConfig {
   thumbnailSizes: number[] = [240, 480];
   @ConfigProperty({volatile: true})
   concurrentThumbnailGenerations: number = 1;
-
-  /**
-   * Generates a map for bitwise operation from icon and normal thumbnails
-   */
-  generateThumbnailMap(): { [key: number]: number } {
-    const m: { [key: number]: number } = {};
-    [this.iconSize, ...this.thumbnailSizes.sort()].forEach((v, i) => {
-      m[v] = Math.pow(2, i + 1);
-    });
-    return m;
-  }
-
-  /**
-   * Generates a map for bitwise operation from icon and normal thumbnails
-   */
-  generateThumbnailMapEntries(): { size: number, bit: number }[] {
-    return Object.entries(this.generateThumbnailMap()).map(v => ({size: parseInt(v[0]), bit: v[1]}));
-  }
 }
 
 @SubConfigClass()
@@ -146,10 +121,7 @@ export class ClientOtherConfig {
   enableOnScrollRendering: boolean = true;
   @ConfigProperty({type: SortingMethods})
   defaultPhotoSortingMethod: SortingMethods = SortingMethods.ascDate;
-  @ConfigProperty({
-    description:
-      'If enabled directories will be sorted by date, like photos, otherwise by name. Directory date is the last modification time of that directory not the creation date of the oldest photo',
-  })
+  @ConfigProperty({description: 'If enabled directories will be sorted by date, like photos, otherwise by name. Directory date is the last modification time of that directory not the creation date of the oldest photo'})
   enableDirectorySortingByDate: boolean = false;
   @ConfigProperty()
   enableOnScrollThumbnailPrioritising: boolean = true;
@@ -159,10 +131,7 @@ export class ClientOtherConfig {
   captionFirstNaming: boolean = false; // shows the caption instead of the filename in the photo grid
   @ConfigProperty()
   enableDownloadZip: boolean = false;
-  @ConfigProperty({
-    description:
-      'Adds a button to flattens the file structure, by listing the content of all subdirectories.',
-  })
+  @ConfigProperty({description: 'Adds a button to flattens the file structure, by listing the content of all subdirectories.'})
   enableDirectoryFlattening: boolean = false;
 }
 
@@ -170,16 +139,6 @@ export class ClientOtherConfig {
 export class ClientVideoConfig {
   @ConfigProperty()
   enabled: boolean = true;
-  @ConfigProperty({
-    arrayType: 'string',
-    description: 'Video formats that are supported after transcoding (with the build-in ffmpeg support)'
-  })
-  supportedFormatsWithTranscoding: string[] = ['avi', 'mkv', 'mov', 'wmv', 'flv', 'mts', 'm2ts', 'mpg', '3gp', 'm4v', 'mpeg', 'vob', 'divx', 'xvid', 'ts'];
-  // Browser supported video formats
-  // Read more:  https://www.w3schools.com/html/html5_video.asp
-  @ConfigProperty({arrayType: 'string', description: 'Video formats that are supported also without transcoding'})
-  supportedFormats: string[] = ['mp4', 'webm', 'ogv', 'ogg'];
-
 }
 
 @SubConfigClass()
@@ -192,19 +151,8 @@ export class PhotoConvertingConfig {
 export class ClientPhotoConfig {
   @ConfigProperty()
   Converting: PhotoConvertingConfig = new PhotoConvertingConfig();
-  @ConfigProperty({
-    description:
-      'Enables loading the full resolution image on zoom in the ligthbox (preview).',
-  })
+  @ConfigProperty({description: 'Enables loading the full resolution image on zoom in the ligthbox (preview).'})
   loadFullImageOnZoom: boolean = true;
-  @ConfigProperty({arrayType: 'string'})
-  supportedFormats: string[] = ['gif', 'jpeg', 'jpg', 'jpe', 'png', 'webp', 'svg'];
-}
-
-@SubConfigClass()
-export class ClientGPXCompressingConfig {
-  @ConfigProperty()
-  enabled: boolean = true;
 }
 
 @SubConfigClass()
@@ -219,27 +167,12 @@ export class ClientMediaConfig {
 
 @SubConfigClass()
 export class ClientMetaFileConfig {
-  @ConfigProperty({
-    description: 'Reads *.gpx files and renders them on the map.',
-  })
+  @ConfigProperty({description: 'Reads *.gpx files and renders them on the map.'})
   gpx: boolean = true;
-
-  @ConfigProperty()
-  GPXCompressing: ClientGPXCompressingConfig = new ClientGPXCompressingConfig();
-
-  @ConfigProperty({
-    description:
-      'Reads *.md files in a directory and shows the next to the map.',
-  })
+  @ConfigProperty({description: 'Reads *.md files in a directory and shows the next to the map.'})
   markdown: boolean = true;
-
-  @ConfigProperty({
-    description:
-      'Reads *.pg2conf files (You can use it for custom sorting and save search (albums)).',
-  })
+  @ConfigProperty({description: 'Reads *.pg2conf files (You can use it for custom sorting and save search (albums)).'})
   pg2conf: boolean = true;
-  @ConfigProperty({arrayType: 'string'})
-  supportedFormats: string[] = ['gpx', 'pg2conf', 'md'];
 }
 
 @SubConfigClass()
@@ -279,7 +212,7 @@ export class ClientConfig {
   @ConfigProperty({type: UserRoles})
   unAuthenticatedUserRole: UserRoles = UserRoles.Admin;
   @ConfigProperty({arrayType: 'string', volatile: true})
-  languages: string[] | undefined;
+  languages: string[];
   @ConfigProperty()
   Media: ClientMediaConfig = new ClientMediaConfig();
   @ConfigProperty()
@@ -287,3 +220,6 @@ export class ClientConfig {
   @ConfigProperty()
   Faces: ClientFacesConfig = new ClientFacesConfig();
 }
+
+
+

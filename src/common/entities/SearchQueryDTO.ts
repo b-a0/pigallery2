@@ -1,10 +1,7 @@
-import { GPSMetadata } from './PhotoDTO';
+import {GPSMetadata} from './PhotoDTO';
 
 export enum SearchQueryTypes {
-  AND = 1,
-  OR,
-  SOME_OF,
-  UNKNOWN_RELATION = 99999,
+  AND = 1, OR, SOME_OF, UNKNOWN_RELATION = 99999,
 
   // non-text metadata
   // |- range types
@@ -50,34 +47,30 @@ export const MinRangeSearchQueryTypes = [
 export const MaxRangeSearchQueryTypes = [
   SearchQueryTypes.to_date,
   SearchQueryTypes.max_rating,
-  SearchQueryTypes.max_resolution,
+  SearchQueryTypes.max_resolution
 ];
 
-export const RangeSearchQueryTypes = MinRangeSearchQueryTypes.concat(
-  MaxRangeSearchQueryTypes
-);
+export const RangeSearchQueryTypes = MinRangeSearchQueryTypes.concat(MaxRangeSearchQueryTypes);
 
 export const MetadataSearchQueryTypes = [
   SearchQueryTypes.distance,
-  SearchQueryTypes.orientation,
-]
-  .concat(RangeSearchQueryTypes)
+  SearchQueryTypes.orientation
+].concat(RangeSearchQueryTypes)
   .concat(TextSearchQueryTypes);
 
 export const rangedTypePairs: any = {};
 rangedTypePairs[SearchQueryTypes.from_date] = SearchQueryTypes.to_date;
 rangedTypePairs[SearchQueryTypes.min_rating] = SearchQueryTypes.max_rating;
-rangedTypePairs[SearchQueryTypes.min_resolution] =
-  SearchQueryTypes.max_resolution;
+rangedTypePairs[SearchQueryTypes.min_resolution] = SearchQueryTypes.max_resolution;
 // add the other direction too
 for (const key of Object.keys(rangedTypePairs)) {
   rangedTypePairs[rangedTypePairs[key]] = key;
 }
 
 export enum TextSearchQueryMatchTypes {
-  exact_match = 1,
-  like = 2,
+  exact_match = 1, like = 2
 }
+
 
 export const SearchQueryDTOUtils = {
   getRangedQueryPair: (type: SearchQueryTypes): SearchQueryTypes => {
@@ -90,20 +83,15 @@ export const SearchQueryDTOUtils = {
     switch (query.type) {
       case SearchQueryTypes.AND:
         query.type = SearchQueryTypes.OR;
-        (query as SearchListQuery).list = (query as SearchListQuery).list.map(
-          (q) => SearchQueryDTOUtils.negate(q)
-        );
+        (query as SearchListQuery).list = (query as SearchListQuery).list.map(q => SearchQueryDTOUtils.negate(q));
         return query;
       case SearchQueryTypes.OR:
         query.type = SearchQueryTypes.AND;
-        (query as SearchListQuery).list = (query as SearchListQuery).list.map(
-          (q) => SearchQueryDTOUtils.negate(q)
-        );
+        (query as SearchListQuery).list = (query as SearchListQuery).list.map(q => SearchQueryDTOUtils.negate(q));
         return query;
 
       case SearchQueryTypes.orientation:
-        (query as OrientationSearch).landscape = !(query as OrientationSearch)
-          .landscape;
+        (query as OrientationSearch).landscape = !(query as OrientationSearch).landscape;
         return query;
 
       case SearchQueryTypes.from_date:
@@ -120,9 +108,7 @@ export const SearchQueryDTOUtils = {
       case SearchQueryTypes.caption:
       case SearchQueryTypes.file_name:
       case SearchQueryTypes.directory:
-        (query as NegatableSearchQuery).negate = !(
-          query as NegatableSearchQuery
-        ).negate;
+        (query as NegatableSearchQuery).negate = !(query as NegatableSearchQuery).negate;
         return query;
 
       case SearchQueryTypes.SOME_OF:
@@ -131,12 +117,13 @@ export const SearchQueryDTOUtils = {
       default:
         throw new Error('Unknown type' + query.type);
     }
-  },
+  }
 };
 
 export interface SearchQueryDTO {
   type: SearchQueryTypes;
 }
+
 
 export interface NegatableSearchQuery extends SearchQueryDTO {
   negate?: boolean; // if true negates the expression
@@ -145,6 +132,7 @@ export interface NegatableSearchQuery extends SearchQueryDTO {
 export interface SearchListQuery extends SearchQueryDTO {
   list: SearchQueryDTO[];
 }
+
 
 export interface ANDSearchQuery extends SearchQueryDTO, SearchListQuery {
   type: SearchQueryTypes.AND;
@@ -163,14 +151,13 @@ export interface SomeOfSearchQuery extends SearchQueryDTO, SearchListQuery {
 }
 
 export interface TextSearch extends NegatableSearchQuery {
-  type:
-    | SearchQueryTypes.any_text
-    | SearchQueryTypes.person
-    | SearchQueryTypes.keyword
-    | SearchQueryTypes.position
-    | SearchQueryTypes.caption
-    | SearchQueryTypes.file_name
-    | SearchQueryTypes.directory;
+  type: SearchQueryTypes.any_text |
+    SearchQueryTypes.person |
+    SearchQueryTypes.keyword |
+    SearchQueryTypes.position |
+    SearchQueryTypes.caption |
+    SearchQueryTypes.file_name |
+    SearchQueryTypes.directory;
   matchType?: TextSearchQueryMatchTypes;
   text: string;
 }
@@ -183,6 +170,7 @@ export interface DistanceSearch extends NegatableSearchQuery {
   };
   distance: number; // in kms
 }
+
 
 export interface RangeSearch extends NegatableSearchQuery {
   value: number;

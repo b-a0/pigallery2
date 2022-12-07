@@ -1,7 +1,8 @@
 <div class="content d-flex flex-column">
   <div class="modal-header">
     <h2 class="modal-title" i18n>Info</h2>
-    <button type="button"  class="btn-close"  (click)="close()" aria-label="Close">
+    <button type="button" class="close" (click)="close()" aria-label="Close">
+      <span class="oi oi-x" aria-hidden="true"></span>
     </button>
   </div>
   <div class="row">
@@ -28,10 +29,10 @@
     </div>
     <div class="col-10">
       <div class="details-main">
-        {{ media.metadata.creationDate | date: (isThisYear() ? 'MMMM d' : 'longDate') : 'UTC' }}
+        {{ media.metadata.creationDate | date: (isThisYear() ? 'MMMM d' : 'longDate')}}
       </div>
       <div class="details-sub row">
-        <div class="col-12">{{ media.metadata.creationDate | date : 'EEEE, HH:mm:ss' : 'UTC' }}</div>
+        <div class="col-12">{{ media.metadata.creationDate | date :'EEEE'}}, {{getTime()}}</div>
       </div>
     </div>
   </div>
@@ -89,8 +90,8 @@
     </div>
     <div class="col-10">
       <div class="details-main mt-2" [title]="Rating + ' stars'">
-        <span *ngFor="let stars of [].constructor(Rating)" class="oi oi-star text-dark me-1"></span>
-        <span *ngFor="let stars of [].constructor(5-Rating)" class="oi oi-star text-muted me-1"></span>
+        <span *ngFor="let stars of [].constructor(Rating)" class="oi oi-star text-dark mr-1"></span>
+        <span *ngFor="let stars of [].constructor(5-Rating)" class="oi oi-star text-muted mr-1"></span>
       </div>
     </div>
   </div>
@@ -127,8 +128,8 @@
       </div>
       <div class="details-sub row" *ngIf="hasGPS()">
         <div class="col-12">
-          {{PositionData.GPSData.latitude.toFixed(6)}},
-          {{PositionData.GPSData.longitude.toFixed(6)}}
+          {{PositionData.GPSData.latitude.toFixed(3)}},
+          {{PositionData.GPSData.longitude.toFixed(3)}}
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ describe('Typeorm integration', () => {
 
   const tempDir = path.join(__dirname, '../../tmp');
   const setUpSqlDB = async () => {
-    await fs.promises.rm(tempDir, {recursive: true, force: true});
+    await fs.promises.rm(tempDir, {recursive: true, force:true});
 
     Config.Server.Database.type = DatabaseType.sqlite;
     Config.Server.Database.dbFolder = tempDir;
@@ -34,7 +34,7 @@ describe('Typeorm integration', () => {
 
   const teardownUpSqlDB = async () => {
     await SQLConnection.close();
-    await fs.promises.rm(tempDir, {recursive: true});
+    await fs.promises.rmdir(tempDir, {recursive: true});
   };
 
   beforeEach(async () => {
@@ -65,6 +65,7 @@ describe('Typeorm integration', () => {
     sd.height = 200;
     sd.width = 200;
     const gps = new GPSMetadataEntity();
+    gps.altitude = 1;
     gps.latitude = 1;
     gps.longitude = 1;
     const pd = new PositionMetaDataEntity();
@@ -104,14 +105,14 @@ describe('Typeorm integration', () => {
     a.role = UserRoles.Admin;
     await conn.getRepository(UserEntity).save(a);
 
-    const version = (await conn.getRepository(VersionEntity).find())[0];
+    const version = await conn.getRepository(VersionEntity).findOne();
     version.version--;
     await conn.getRepository(VersionEntity).save(version);
 
     await SQLConnection.close();
 
     const conn2 = await SQLConnection.getConnection();
-    const admins = await conn2.getRepository(UserEntity).findBy({name: 'migrated admin'});
+    const admins = await conn2.getRepository(UserEntity).find({name: 'migrated admin'});
     expect(admins.length).to.be.equal(1);
   });
 

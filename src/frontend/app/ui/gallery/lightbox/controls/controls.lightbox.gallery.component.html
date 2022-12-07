@@ -46,7 +46,7 @@
        (swiperight)="zoom == 1 && previousPhoto.emit()"
        (swipeup)="zoom == 1 && closed.emit()"
        (tap)="tap($event)"
-       (pan)="pan($any($event))"
+       (pan)="pan($event)"
        (wheel)="wheel($event)"
        (click)="mediaElement.playPause()">
 
@@ -98,7 +98,7 @@
   <div class="controls controls-zoom row" *ngIf="Zoom > 1">
     <div class="col-1 col-md-4">
         <span (click)="zoomOut()" i18n-title title="Zoom out, key: '-'"
-              class="oi oi-zoom-out float-end"></span>
+              class="oi oi-zoom-out float-right"></span>
     </div>
     <input type="range"
            [(ngModel)]="Zoom" min="1" [max]="MAX_ZOOM" step="0.1"

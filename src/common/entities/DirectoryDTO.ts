@@ -1,17 +1,30 @@
-import { MediaDTO, MediaDTOUtils } from './MediaDTO';
-import { FileDTO } from './FileDTO';
-import { PhotoDTO, PreviewPhotoDTO } from './PhotoDTO';
-import { Utils } from '../Utils';
+import {MediaDTO, MediaDTOUtils} from './MediaDTO';
+import {FileDTO} from './FileDTO';
+import {PhotoDTO, PreviewPhotoDTO} from './PhotoDTO';
+import {Utils} from '../Utils';
 
 export interface DirectoryPathDTO {
   name: string;
   path: string;
 }
+//
+// export interface DirectoryDTO<S extends FileDTO = MediaDTO> extends DirectoryPathDTO {
+//   id: number;
+//   name: string;
+//   path: string;
+//   lastModified: number;
+//   lastScanned: number;
+//   isPartial?: boolean;
+//   parent: DirectoryDTO<S>;
+//   mediaCount: number;
+//   directories: DirectoryDTO<S>[];
+//   preview: PreviewPhotoDTO;
+//   media: S[];
+//   metaFile: FileDTO[];
+// }
 
 
-
-export interface DirectoryBaseDTO<S extends FileDTO = MediaDTO>
-  extends DirectoryPathDTO {
+export interface DirectoryBaseDTO<S extends FileDTO = MediaDTO> extends DirectoryPathDTO {
   id: number;
   name: string;
   path: string;
@@ -28,8 +41,7 @@ export interface DirectoryBaseDTO<S extends FileDTO = MediaDTO>
   validPreview?: boolean; // does not go to the client side
 }
 
-export interface ParentDirectoryDTO<S extends FileDTO = MediaDTO>
-  extends DirectoryBaseDTO<S> {
+export interface ParentDirectoryDTO<S extends FileDTO = MediaDTO> extends DirectoryBaseDTO<S> {
   id: number;
   name: string;
   path: string;
@@ -43,8 +55,7 @@ export interface ParentDirectoryDTO<S extends FileDTO = MediaDTO>
   metaFile: FileDTO[];
 }
 
-export interface SubDirectoryDTO<S extends FileDTO = MediaDTO>
-  extends DirectoryBaseDTO<S> {
+export interface SubDirectoryDTO<S extends FileDTO = MediaDTO> extends DirectoryBaseDTO<S> {
   id: number;
   name: string;
   path: string;
@@ -58,7 +69,7 @@ export interface SubDirectoryDTO<S extends FileDTO = MediaDTO>
 }
 
 export const DirectoryDTOUtils = {
-  addReferences: (dir: DirectoryBaseDTO): void => {
+  unpackDirectory: (dir: DirectoryBaseDTO): void => {
     dir.media.forEach((media: MediaDTO) => {
       media.directory = dir;
     });
@@ -71,13 +82,13 @@ export const DirectoryDTOUtils = {
 
     if (dir.directories) {
       dir.directories.forEach((directory) => {
-        DirectoryDTOUtils.addReferences(directory);
+        DirectoryDTOUtils.unpackDirectory(directory);
         directory.parent = dir;
       });
     }
   },
 
-  removeReferences: (dir: DirectoryBaseDTO): DirectoryBaseDTO => {
+  packDirectory: (dir: DirectoryBaseDTO): DirectoryBaseDTO => {
     if (dir.preview) {
       dir.preview.directory = {
         path: dir.preview.directory.path,
@@ -102,7 +113,7 @@ export const DirectoryDTOUtils = {
     }
     if (dir.directories) {
       dir.directories.forEach((directory) => {
-        DirectoryDTOUtils.removeReferences(directory);
+        DirectoryDTOUtils.packDirectory(directory);
         directory.parent = null;
       });
     }
@@ -110,5 +121,12 @@ export const DirectoryDTOUtils = {
     delete dir.validPreview; // should not go to the client side;
 
     return dir;
+
   },
+  filterPhotos: (dir: DirectoryBaseDTO): PhotoDTO[] => {
+    return dir.media.filter(m => MediaDTOUtils.isPhoto(m)) as PhotoDTO[];
+  },
+  filterVideos: (dir: DirectoryBaseDTO): PhotoDTO[] => {
+    return dir.media.filter(m => MediaDTOUtils.isPhoto(m)) as PhotoDTO[];
+  }
 };

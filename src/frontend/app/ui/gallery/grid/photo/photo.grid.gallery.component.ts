@@ -1,44 +1,27 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { Dimension, IRenderable } from '../../../../model/IRenderable';
-import { GridMedia } from '../GridMedia';
-import { RouterLink } from '@angular/router';
-import {
-  Thumbnail,
-  ThumbnailManagerService,
-} from '../../thumbnailManager.service';
-import { Config } from '../../../../../../common/config/public/Config';
-import { PageHelper } from '../../../../model/page.helper';
-import {
-  PhotoDTO,
-  PhotoMetadata,
-} from '../../../../../../common/entities/PhotoDTO';
-import {
-  SearchQueryTypes,
-  TextSearch,
-  TextSearchQueryMatchTypes,
-} from '../../../../../../common/entities/SearchQueryDTO';
-import { AuthenticationService } from '../../../../model/network/authentication.service';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Dimension, IRenderable} from '../../../../model/IRenderable';
+import {GridMedia} from '../GridMedia';
+import {RouterLink} from '@angular/router';
+import {Thumbnail, ThumbnailManagerService} from '../../thumbnailManager.service';
+import {Config} from '../../../../../../common/config/public/Config';
+import {PageHelper} from '../../../../model/page.helper';
+import {PhotoDTO, PhotoMetadata} from '../../../../../../common/entities/PhotoDTO';
+import {SearchQueryTypes, TextSearch, TextSearchQueryMatchTypes} from '../../../../../../common/entities/SearchQueryDTO';
+import {AuthenticationService} from '../../../../model/network/authentication.service';
 
 @Component({
   selector: 'app-gallery-grid-photo',
   templateUrl: './photo.grid.gallery.component.html',
   styleUrls: ['./photo.grid.gallery.component.css'],
-  providers: [RouterLink],
+  providers: [RouterLink]
 })
 export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
   @Input() gridMedia: GridMedia;
-  @ViewChild('img', { static: false }) imageRef: ElementRef;
-  @ViewChild('photoContainer', { static: true }) container: ElementRef;
+  @ViewChild('img', {static: false}) imageRef: ElementRef;
+  @ViewChild('photoContainer', {static: true}) container: ElementRef;
 
   thumbnail: Thumbnail;
-  keywords: { value: string; type: SearchQueryTypes }[] = null;
+  keywords: { value: string, type: SearchQueryTypes }[] = null;
   infoBarVisible = false;
   animationTimer: number = null;
 
@@ -47,17 +30,15 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
 
   wasInView: boolean = null;
 
-  constructor(
-    private thumbnailService: ThumbnailManagerService,
-    private authService: AuthenticationService
-  ) {
-    this.searchEnabled =
-      Config.Client.Search.enabled && this.authService.canSearch();
+  constructor(private thumbnailService: ThumbnailManagerService,
+              private authService: AuthenticationService) {
+    this.searchEnabled = Config.Client.Search.enabled && this.authService.canSearch();
   }
 
   get ScrollListener(): boolean {
     return !this.thumbnail.Available && !this.thumbnail.Error;
   }
+
 
   get Title(): string {
     if (Config.Client.Other.captionFirstNaming === false) {
@@ -65,10 +46,7 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
     }
     if ((this.gridMedia.media as PhotoDTO).metadata.caption) {
       if ((this.gridMedia.media as PhotoDTO).metadata.caption.length > 20) {
-        return (
-          (this.gridMedia.media as PhotoDTO).metadata.caption.substring(0, 17) +
-          '...'
-        );
+        return (this.gridMedia.media as PhotoDTO).metadata.caption.substring(0, 17) + '...';
       }
       return (this.gridMedia.media as PhotoDTO).metadata.caption;
     }
@@ -78,31 +56,20 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
   ngOnInit(): void {
     this.thumbnail = this.thumbnailService.getThumbnail(this.gridMedia);
     const metadata = this.gridMedia.media.metadata as PhotoMetadata;
-    if (
-      (metadata.keywords && metadata.keywords.length > 0) ||
-      (metadata.faces && metadata.faces.length > 0)
-    ) {
+    if ((metadata.keywords && metadata.keywords.length > 0) ||
+      (metadata.faces && metadata.faces.length > 0)) {
       this.keywords = [];
       if (Config.Client.Faces.enabled) {
-        const names: string[] = (metadata.faces || []).map(
-          (f): string => f.name
-        );
-        this.keywords = names
-          .filter((name, index): boolean => names.indexOf(name) === index)
-          .map((n): { type: SearchQueryTypes; value: string } => ({
-            value: n,
-            type: SearchQueryTypes.person,
-          }));
+        const names: string[] = (metadata.faces || []).map((f): string => f.name);
+        this.keywords = names.filter((name, index): boolean => names.indexOf(name) === index)
+          .map((n): { type: SearchQueryTypes; value: string } => ({value: n, type: SearchQueryTypes.person}));
       }
-      this.keywords = this.keywords.concat(
-        (metadata.keywords || []).map(
-          (k): { type: SearchQueryTypes; value: string } => ({
-            value: k,
-            type: SearchQueryTypes.keyword,
-          })
-        )
-      );
+      this.keywords = this.keywords.concat((metadata.keywords || []).map((k): { type: SearchQueryTypes; value: string } => ({
+        value: k,
+        type: SearchQueryTypes.keyword
+      })));
     }
+
   }
 
   ngOnDestroy(): void {
@@ -114,13 +81,8 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
   }
 
   isInView(): boolean {
-    return (
-      PageHelper.ScrollY <
-        this.container.nativeElement.offsetTop +
-          this.container.nativeElement.clientHeight &&
-      PageHelper.ScrollY + window.innerHeight >
-        this.container.nativeElement.offsetTop
-    );
+    return PageHelper.ScrollY < this.container.nativeElement.offsetTop + this.container.nativeElement.clientHeight
+      && PageHelper.ScrollY + window.innerHeight > this.container.nativeElement.offsetTop;
   }
 
   onScroll(): void {
@@ -135,17 +97,14 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
   }
 
   getPositionSearchQuery(): string {
-    return JSON.stringify({
-      type: SearchQueryTypes.position,
-      text: this.getPositionText(),
-    } as TextSearch);
+    return JSON.stringify({type: SearchQueryTypes.position, text: this.getPositionText()} as TextSearch);
   }
 
   getTextSearchQuery(name: string, type: SearchQueryTypes): string {
     return JSON.stringify({
       type,
       matchType: TextSearchQueryMatchTypes.exact_match,
-      text: name,
+      text: name
     } as TextSearch);
   }
 
@@ -153,11 +112,9 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
     if (!this.gridMedia || !this.gridMedia.isPhoto()) {
       return '';
     }
-    return (
-      (this.gridMedia.media as PhotoDTO).metadata.positionData.city ||
+    return (this.gridMedia.media as PhotoDTO).metadata.positionData.city ||
       (this.gridMedia.media as PhotoDTO).metadata.positionData.state ||
-      (this.gridMedia.media as PhotoDTO).metadata.positionData.country
-    );
+      (this.gridMedia.media as PhotoDTO).metadata.positionData.country;
   }
 
   mouseOver(): void {
@@ -184,15 +141,16 @@ export class GalleryPhotoComponent implements IRenderable, OnInit, OnDestroy {
         top: 0,
         left: 0,
         width: 0,
-        height: 0,
+        height: 0
       };
     }
     return {
       top: this.imageRef.nativeElement.offsetParent.offsetTop,
       left: this.imageRef.nativeElement.offsetParent.offsetLeft,
       width: this.imageRef.nativeElement.width,
-      height: this.imageRef.nativeElement.height,
+      height: this.imageRef.nativeElement.height
     };
   }
+
 }
 

@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import {Request} from 'express';
 
 export enum ErrorCodes {
   NOT_AUTHENTICATED = 1,
@@ -7,7 +7,9 @@ export enum ErrorCodes {
   PERMISSION_DENIED = 4,
   CREDENTIAL_NOT_FOUND = 5,
 
+
   USER_CREATION_ERROR = 6,
+
 
   GENERAL_ERROR = 7,
   THUMBNAIL_GENERATION_ERROR = 8,
@@ -29,22 +31,15 @@ export enum ErrorCodes {
 export class ErrorDTO {
   public detailsStr: string;
   public request: {
-    method: string;
-    url: string;
-  } = { method: '', url: '' };
+    method: string, url: string
+  } = {method: '', url: ''};
 
-  constructor(
-    public code: ErrorCodes,
-    public message?: string,
-    public details?: any,
-    req?: Request
-  ) {
-    this.detailsStr =
-      (this.details ? this.details.toString() : '') || ErrorCodes[code];
+  constructor(public code: ErrorCodes, public message?: string, public details?: any, req?: Request) {
+    this.detailsStr = (this.details ? this.details.toString() : '') || ErrorCodes[code];
     if (req) {
       this.request = {
         method: req.method,
-        url: req.url,
+        url: req.url
       };
     }
   }

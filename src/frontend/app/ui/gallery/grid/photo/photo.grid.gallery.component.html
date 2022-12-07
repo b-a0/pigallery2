@@ -17,7 +17,7 @@
 
   <!--Info box -->
   <div class="info"
-       *ngIf="infoBarVisible">
+       *ngIf="infoBarVisible" >
     <div class="photo-name">{{Title}}</div>
 
     <div class="photo-position" *ngIf="gridMedia.hasPositionData()">
@@ -36,8 +36,7 @@
         <a *ngIf="searchEnabled"
            [routerLink]="['/search', getTextSearchQuery(keyword.value,keyword.type)]" [ngSwitch]="keyword.type">
           <ng-template [ngSwitchCase]="SearchQueryTypes.keyword">#</ng-template><!--
-       -->
-          <ng-template [ngSwitchCase]="SearchQueryTypes.person"><span class="oi oi-person"></span></ng-template><!--
+       --><ng-template [ngSwitchCase]="SearchQueryTypes.person"><span class="oi oi-person"></span></ng-template><!--
        -->{{keyword.value}}</a>
         <span *ngIf="!searchEnabled" [ngSwitch]="keyword.type">
           <ng-template [ngSwitchCase]="SearchQueryTypes.keyword">#</ng-template><!--

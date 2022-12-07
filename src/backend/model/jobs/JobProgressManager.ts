@@ -1,22 +1,17 @@
-import { promises as fsp } from 'fs';
+import {promises as fsp} from 'fs';
 import * as path from 'path';
-import { ProjectPath } from '../../ProjectPath';
-import { Config } from '../../../common/config/private/Config';
-import {
-  JobProgressDTO,
-  JobProgressStates,
-} from '../../../common/entities/job/JobProgressDTO';
+import {ProjectPath} from '../../ProjectPath';
+import {Config} from '../../../common/config/private/Config';
+import {JobProgressDTO, JobProgressStates} from '../../../common/entities/job/JobProgressDTO';
 
 export class JobProgressManager {
   private static readonly VERSION = 3;
   private db: {
-    version: number;
-    progresses: {
-      [key: string]: { progress: JobProgressDTO; timestamp: number };
-    };
+    version: number,
+    progresses: { [key: string]: { progress: JobProgressDTO, timestamp: number } }
   } = {
     version: JobProgressManager.VERSION,
-    progresses: {},
+    progresses: {}
   };
   private readonly dbPath: string;
   private timer: NodeJS.Timeout = null;
@@ -30,17 +25,16 @@ export class JobProgressManager {
     const m: { [key: string]: JobProgressDTO } = {};
     for (const key of Object.keys(this.db.progresses)) {
       m[key] = this.db.progresses[key].progress;
-      if (
-        this.db.progresses[key].progress.state === JobProgressStates.running
-      ) {
+      if (this.db.progresses[key].progress.state === JobProgressStates.running) {
         m[key].time.end = Date.now();
       }
     }
     return m;
   }
 
+
   onJobProgressUpdate(progress: JobProgressDTO): void {
-    this.db.progresses[progress.HashName] = { progress, timestamp: Date.now() };
+    this.db.progresses[progress.HashName] = {progress, timestamp: Date.now()};
     this.delayedSave();
   }
 
@@ -57,16 +51,10 @@ export class JobProgressManager {
     }
     this.db = db;
 
-    while (
-      Object.keys(this.db.progresses).length >
-      Config.Server.Jobs.maxSavedProgress
-    ) {
+    while (Object.keys(this.db.progresses).length > Config.Server.Jobs.maxSavedProgress) {
       let min: string = null;
       for (const key of Object.keys(this.db.progresses)) {
-        if (
-          min === null ||
-          this.db.progresses[min].timestamp > this.db.progresses[key].timestamp
-        ) {
+        if (min === null || this.db.progresses[min].timestamp > this.db.progresses[key].timestamp) {
           min = key;
         }
       }
@@ -74,10 +62,8 @@ export class JobProgressManager {
     }
 
     for (const key of Object.keys(this.db.progresses)) {
-      if (
-        this.db.progresses[key].progress.state === JobProgressStates.running ||
-        this.db.progresses[key].progress.state === JobProgressStates.cancelling
-      ) {
+      if (this.db.progresses[key].progress.state === JobProgressStates.running ||
+        this.db.progresses[key].progress.state === JobProgressStates.cancelling) {
         this.db.progresses[key].progress.state = JobProgressStates.interrupted;
       }
     }
@@ -96,4 +82,5 @@ export class JobProgressManager {
       this.timer = null;
     }, 5000);
   }
+
 }

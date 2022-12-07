@@ -1,30 +1,27 @@
-import { Logger } from '../../Logger';
-import { promises as fsp } from 'fs';
-import { FfmpegCommand } from 'fluent-ffmpeg';
-import { FFmpegFactory } from '../FFmpegFactory';
-import {
-  FFmpegPresets,
-  videoCodecType,
-  videoFormatType,
-  videoResolutionType,
-} from '../../../common/config/private/PrivateConfig';
+import {Logger} from '../../Logger';
+import {promises as fsp} from 'fs';
+import {FfmpegCommand} from 'fluent-ffmpeg';
+import {FFmpegFactory} from '../FFmpegFactory';
+import {FFmpegPresets, videoCodecType, videoFormatType, videoResolutionType} from '../../../common/config/private/PrivateConfig';
+
 
 export interface VideoConverterInput {
   videoPath: string;
   output: {
-    path: string;
-    bitRate?: number;
-    resolution?: videoResolutionType;
-    fps?: number;
-    crf?: number;
-    preset?: FFmpegPresets;
-    customOptions?: string[];
-    codec: videoCodecType;
-    format: videoFormatType;
+    path: string,
+    bitRate?: number,
+    resolution?: videoResolutionType,
+    fps?: number,
+    crf?: number,
+    preset?: FFmpegPresets,
+    customOptions?: string[],
+    codec: videoCodecType,
+    format: videoFormatType
   };
 }
 
 export class VideoConverterWorker {
+
   private static ffmpeg = FFmpegFactory.get();
 
   public static async convert(input: VideoConverterInput): Promise<void> {
@@ -32,15 +29,19 @@ export class VideoConverterWorker {
     input.output.path = origPath + '.part';
     await this._convert(input);
     await fsp.rename(input.output.path, origPath);
+
   }
 
   private static _convert(input: VideoConverterInput): Promise<void> {
+
     if (this.ffmpeg == null) {
       this.ffmpeg = FFmpegFactory.get();
     }
 
     return new Promise((resolve, reject) => {
+
       Logger.silly('[FFmpeg] transcoding video: ' + input.videoPath);
+
 
       const command: FfmpegCommand = this.ffmpeg(input.videoPath);
       let executedCmd = '';
@@ -57,7 +58,7 @@ export class VideoConverterWorker {
         });
       // set video bitrate
       if (input.output.bitRate) {
-        command.videoBitrate(input.output.bitRate / 1024 + 'k');
+        command.videoBitrate((input.output.bitRate / 1024) + 'k');
       }
       // set target codec
       command.videoCodec(input.output.codec);
@@ -85,11 +86,12 @@ export class VideoConverterWorker {
       }
 
       // set output format to force
-      command
-        .format(input.output.format)
+      command.format(input.output.format)
         // save to file
         .save(input.output.path);
+
     });
   }
+
 }
 

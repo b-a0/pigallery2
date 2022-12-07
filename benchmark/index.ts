@@ -3,7 +3,6 @@ import {ProjectPath} from '../src/backend/ProjectPath';
 import {BenchmarkResult, BenchmarkRunner} from './BenchmarkRunner';
 import {Utils} from '../src/common/Utils';
 import {BMConfig} from './BMConfig';
-import {DirectoryDTOUtils} from '../src/common/entities/DirectoryDTO';
 
 
 Config.Server.Media.folder = BMConfig.path;
@@ -36,31 +35,17 @@ const printTableHeader = () => {
 };
 const printExperimentResult = (result: BenchmarkResult, isSubResult = false) => {
   console.log('benchmarked: ' + result.name);
-
-  const fileSize = (size: number): string => {
-    const postFixes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    let index = 0;
-    while (size > 1000 && index < postFixes.length - 1) {
-      size /= 1000;
-      index++;
-    }
-    return size.toFixed(2) + postFixes[index];
-  };
   let details = '-';
   if (result.items) {
-    details = 'items: ' + result.items.length +
-      ', size: ' + fileSize(JSON.stringify(result.items).length);
+    details = 'items: ' + result.items;
   }
   if (result.contentWrapper) {
     if (result.contentWrapper.directory) {
       details = 'media: ' + result.contentWrapper.directory.media.length +
-        ', directories: ' + result.contentWrapper.directory.directories.length +
-        ', size: ' + fileSize(JSON.stringify(DirectoryDTOUtils.removeReferences(result.contentWrapper.directory)).length);
+        ', directories: ' + result.contentWrapper.directory.directories.length;
     } else {
       details = 'media: ' + result.contentWrapper.searchResult.media.length +
-        ', directories: ' + result.contentWrapper.searchResult.directories.length +
-        ', size: ' + fileSize(JSON.stringify(result.contentWrapper.searchResult).length);
-
+        ', directories: ' + result.contentWrapper.searchResult.directories.length;
     }
   }
   if (isSubResult) {

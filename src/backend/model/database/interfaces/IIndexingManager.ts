@@ -1,5 +1,5 @@
-import { ParentDirectoryDTO } from '../../../../common/entities/DirectoryDTO';
-import { IObjectManager } from './IObjectManager';
+import {ParentDirectoryDTO} from '../../../../common/entities/DirectoryDTO';
+import {IObjectManager} from './IObjectManager';
 
 export interface IIndexingManager extends IObjectManager {
   SavingReady: Promise<void>;

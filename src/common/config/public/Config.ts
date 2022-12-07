@@ -4,30 +4,30 @@ import {WebConfigClassBuilder} from 'typeconfig/src/decorators/builders/WebConfi
 import {ConfigProperty} from 'typeconfig/src/decorators/property/ConfigPropoerty';
 import {IWebConfigClass} from 'typeconfig/common';
 
+
 /**
  * These configuration will be available at frontend and backend too
  */
 @WebConfigClass()
 export class ClientClass {
+
   @ConfigProperty()
   public Client: ClientConfig = new ClientConfig();
 }
 
 // ConfigInject is getting injected form the server side to the global scope
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// tslint:disable-next-line:no-namespace
 declare namespace ServerInject {
   export const ConfigInject: ClientClass;
 }
 
-export const Config: IWebConfigClass & ClientClass =
-  WebConfigClassBuilder.attachInterface(new ClientClass());
+export let Config: IWebConfigClass & ClientClass = WebConfigClassBuilder.attachInterface(new ClientClass());
 
-if (
-  typeof ServerInject !== 'undefined' &&
-  typeof ServerInject.ConfigInject !== 'undefined'
-) {
+
+if (typeof ServerInject !== 'undefined' && typeof ServerInject.ConfigInject !== 'undefined') {
   Config.load(ServerInject.ConfigInject);
 }
+
 
 if (Config.Client.publicUrl === '') {
   Config.Client.publicUrl = location.origin;

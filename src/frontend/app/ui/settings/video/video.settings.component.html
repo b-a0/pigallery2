@@ -7,14 +7,14 @@
           class="switch"
           name="enabled"
           switch-on-color="success"
-          [switch-inverse]="true"
+          switch-inverse="true"
           switch-off-text="Disabled"
           switch-on-text="Enabled"
           i18n-switch-off-text
           i18n-switch-on-text
           [switch-disabled]="inProgress"
-          [switch-handle-width]="100"
-          [switch-label-width]="20"
+          switch-handle-width="100"
+          switch-label-width="20"
           [(ngModel)]="states.client.enabled.value">
         </bSwitch>
       </div>
@@ -50,7 +50,7 @@
         [simplifiedMode]="simplifiedMode"
         (ngModelChange)="formatChanged($event)"
         [options]="formats"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
       <app-settings-entry
@@ -59,7 +59,7 @@
         [ngModel]="states.server.transcoding.codec"
         [simplifiedMode]="simplifiedMode"
         [options]="codecs[states.server.transcoding.format.value]"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
       <app-settings-entry
@@ -69,7 +69,7 @@
         [ngModel]="states.server.transcoding.resolution"
         (change)="updateBitRate()"
         [options]="resolutions"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
 
@@ -81,12 +81,12 @@
         (change)="updateBitRate()"
         [options]="fps"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
 
-      <div class="mb-3 row"
-           [class.changed-settings]="states.server.transcoding.bitRate.value !== states.server.transcoding.bitRate.default">
+      <div class="form-group row"
+      [class.changed-settings]="states.server.transcoding.bitRate.value !== states.server.transcoding.bitRate.default">
         <label class="col-md-2 control-label" for="bitRate" i18n>Bit rate</label>
         <div class="col-md-10">
           <div class="input-group">
@@ -114,7 +114,7 @@
         i18n-name i18n-description
         [ngModel]="states.server.transcoding.crf"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
       <app-settings-entry
@@ -123,7 +123,7 @@
         i18n-name i18n-description
         [ngModel]="states.server.transcoding.preset"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
       <app-settings-entry
@@ -134,15 +134,15 @@
         [ngModel]="states.server.transcoding.customOptions"
         [allowSpaces]="true"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
 
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

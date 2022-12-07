@@ -36,9 +36,11 @@
     "USA",
     "űáéúőóüö ŰÁÉÚŐÓÜÖ"
   ],
+  "orientation": 1,
   "positionData": {
     "GPSData": {
-      "latitude": 37.871093,
+      "altitude": 90,
+      "latitude": 37.871093333333334,
       "longitude": -122.25678
     },
     "city": "test city őúéáűóöí-.,)(=",

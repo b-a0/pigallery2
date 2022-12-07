@@ -7,14 +7,12 @@ import {PersonDTO} from '../../../../common/entities/PersonDTO';
 import {Person} from '../faces/Person';
 
 export enum ThumbnailLoadingPriority {
-  extraHigh = 4,
-  high = 3,
-  medium = 2,
-  low = 1,
+  extraHigh = 4, high = 3, medium = 2, low = 1
 }
 
 @Injectable()
 export class ThumbnailLoaderService {
+
   que: Array<ThumbnailTask> = [];
   runningRequests = 0;
 
@@ -22,11 +20,7 @@ export class ThumbnailLoaderService {
   }
 
   run = (): void => {
-    if (
-      this.que.length === 0 ||
-      this.runningRequests >=
-      Config.Client.Media.Thumbnail.concurrentThumbnailGenerations
-    ) {
+    if (this.que.length === 0 || this.runningRequests >= Config.Client.Media.Thumbnail.concurrentThumbnailGenerations) {
       return;
     }
     const task = this.getNextTask();
@@ -42,9 +36,7 @@ export class ThumbnailLoaderService {
     const curImg = new Image();
     curImg.onload = (): void => {
       task.onLoaded();
-      task.taskEntities.forEach((te: ThumbnailTaskEntity): void =>
-        te.listener.onLoad()
-      );
+      task.taskEntities.forEach((te: ThumbnailTaskEntity): void => te.listener.onLoad());
 
       this.taskReady(task);
       this.runningRequests--;
@@ -52,9 +44,7 @@ export class ThumbnailLoaderService {
     };
 
     curImg.onerror = (error): void => {
-      task.taskEntities.forEach((te: ThumbnailTaskEntity): void =>
-        te.listener.onError(error)
-      );
+      task.taskEntities.forEach((te: ThumbnailTaskEntity): void => te.listener.onError(error));
 
       this.taskReady(task);
       this.runningRequests--;
@@ -65,77 +55,62 @@ export class ThumbnailLoaderService {
   };
 
   removeTask(taskEntry: ThumbnailTaskEntity): void {
+
     const index = taskEntry.parentTask.taskEntities.indexOf(taskEntry);
     if (index === -1) {
       throw new Error('ThumbnailTaskEntity not exist on Task');
     }
     taskEntry.parentTask.taskEntities.splice(index, 1);
 
-    if (
-      taskEntry.parentTask.taskEntities.length === 0 &&
-      taskEntry.parentTask.inProgress === false
-    ) {
+    if (taskEntry.parentTask.taskEntities.length === 0
+      && taskEntry.parentTask.inProgress === false) {
       const i = this.que.indexOf(taskEntry.parentTask);
       if (i === -1) {
         throw new Error('ThumbnailTask not exist');
       }
       this.que.splice(i, 1);
     }
+
   }
 
-  loadIcon(
-    media: MediaIcon,
-    priority: ThumbnailLoadingPriority,
-    listener: ThumbnailLoadingListener
-  ): ThumbnailTaskEntity {
-    return this.load(
-      media.getIconPath(),
+  loadIcon(media: MediaIcon, priority: ThumbnailLoadingPriority, listener: ThumbnailLoadingListener): ThumbnailTaskEntity {
+
+
+    return this.load(media.getIconPath(),
       (): void => {
         media.iconLoaded();
         this.galleryCacheService.mediaUpdated(media.media);
       },
       priority,
-      listener
-    );
+      listener);
   }
 
-  loadImage(
-    media: Media,
-    priority: ThumbnailLoadingPriority,
-    listener: ThumbnailLoadingListener
-  ): ThumbnailTaskEntity {
-    return this.load(
-      media.getThumbnailPath(),
+  loadImage(media: Media, priority: ThumbnailLoadingPriority, listener: ThumbnailLoadingListener): ThumbnailTaskEntity {
+
+    return this.load(media.getThumbnailPath(),
       (): void => {
         media.thumbnailLoaded();
         this.galleryCacheService.mediaUpdated(media.media);
       },
       priority,
-      listener
-    );
+      listener);
   }
 
-  loadPersonThumbnail(
-    person: PersonDTO,
-    priority: ThumbnailLoadingPriority,
-    listener: ThumbnailLoadingListener
-  ): ThumbnailTaskEntity {
-    return this.load(
-      Person.getThumbnailUrl(person),
+  loadPersonThumbnail(person: PersonDTO, priority: ThumbnailLoadingPriority, listener: ThumbnailLoadingListener): ThumbnailTaskEntity {
+
+    return this.load(Person.getThumbnailUrl(person),
       (): void => {
-        // no callback
       },
       priority,
-      listener
-    );
+      listener);
+
   }
 
-  private load(
-    path: string,
-    onLoaded: () => void,
-    priority: ThumbnailLoadingPriority,
-    listener: ThumbnailLoadingListener
-  ): ThumbnailTaskEntity {
+
+  private load(path: string,
+               onLoaded: () => void,
+               priority: ThumbnailLoadingPriority,
+               listener: ThumbnailLoadingListener): ThumbnailTaskEntity {
     let thTask: ThumbnailTask = null;
     // is image already queued?
     for (const item of this.que) {
@@ -149,7 +124,7 @@ export class ThumbnailLoaderService {
         inProgress: false,
         taskEntities: [],
         onLoaded,
-        path,
+        path
       };
       this.que.push(thTask);
     }
@@ -159,6 +134,7 @@ export class ThumbnailLoaderService {
     if (thTask.inProgress === true) {
       listener.onStartedLoading();
     }
+
 
     setTimeout(this.run, 0);
     return thumbnailTaskEntity;
@@ -200,11 +176,13 @@ export class ThumbnailLoaderService {
   }
 }
 
+
 export interface ThumbnailLoadingListener {
   onStartedLoading: () => void;
   onLoad: () => void;
-  onError: (error: Event | string) => void;
+  onError: (error: any) => void;
 }
+
 
 export interface ThumbnailTaskEntity {
   priority: ThumbnailLoadingPriority;

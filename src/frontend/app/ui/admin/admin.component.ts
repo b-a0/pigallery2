@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren,} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {AuthenticationService} from '../../model/network/authentication.service';
 import {UserRoles} from '../../../../common/entities/UserDTO';
 import {NotificationService} from '../../model/notification.service';
@@ -13,48 +13,41 @@ import {CookieService} from 'ngx-cookie-service';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css'],
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit, AfterViewInit {
   simplifiedMode = true;
   @ViewChildren('setting') settingsComponents: QueryList<ISettingsComponent>;
-  @ViewChildren('setting', {read: ElementRef})
-  settingsComponentsElemRef: QueryList<ElementRef>;
+  @ViewChildren('setting', {read: ElementRef}) settingsComponentsElemRef: QueryList<ElementRef>;
   contents: ISettingsComponent[] = [];
 
-  constructor(
-    private authService: AuthenticationService,
-    private navigation: NavigationService,
-    public notificationService: NotificationService,
-    public settingsService: SettingsService,
-    private cookieService: CookieService
-  ) {
+  constructor(private authService: AuthenticationService,
+              private navigation: NavigationService,
+              public notificationService: NotificationService,
+              public settingsService: SettingsService,
+              private cookieService: CookieService) {
     if (this.cookieService.check(CookieNames.advancedSettings)) {
-      this.simplifiedMode = !(
-        this.cookieService.get(CookieNames.advancedSettings) === 'true'
-      );
+      this.simplifiedMode = !(this.cookieService.get(CookieNames.advancedSettings) === 'true');
     }
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => (this.contents = this.settingsComponents.toArray()), 0);
+    setTimeout(() => this.contents = this.settingsComponents.toArray(), 0);
   }
 
   scrollTo(i: number): void {
-    PageHelper.ScrollY =
-      this.settingsComponentsElemRef
-        .toArray()[i].nativeElement.getBoundingClientRect().top + PageHelper.ScrollY;
+    PageHelper.ScrollY = this.settingsComponentsElemRef.toArray()[i].nativeElement.getBoundingClientRect().top +
+      PageHelper.ScrollY;
   }
 
   ngOnInit(): void {
-    if (
-      !this.authService.isAuthenticated() ||
-      this.authService.user.value.role < UserRoles.Admin
-    ) {
+    if (!this.authService.isAuthenticated()
+      || this.authService.user.value.role < UserRoles.Admin) {
       this.navigation.toLogin();
       return;
     }
   }
+
 
   public getCss(type: NotificationType): string {
     switch (type) {
@@ -70,11 +63,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   modeToggle(): void {
     // save it for some years
-    this.cookieService.set(
-      CookieNames.advancedSettings,
-      this.simplifiedMode ? 'false' : 'true',
-      365 * 50
-    );
+    this.cookieService.set(CookieNames.advancedSettings, this.simplifiedMode ? 'false' : 'true', 365 * 50);
   }
 }
 

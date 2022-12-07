@@ -1,92 +1,81 @@
 <ngx-loading-bar [includeSpinner]="false" color="#337ab7" height="3px"></ngx-loading-bar>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" [routerLink]="['/gallery']"
-       [queryParams]="queryService.getParams()">
-      <img src="assets/icon_inv.png" width="30" height="30" class="d-inline-block align-top" alt="">
-      <strong>{{title}}</strong>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false" aria-label="Toggle navigation" (click)="collapsed = !collapsed">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse text-center" id="navbarCollapse" [collapse]="collapsed">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0 text-lg-start">
-        <li class="nav-item">
-          <a class="nav-link"
-             [routerLink]="['/gallery']"
-             [queryParams]="queryService.getParams()" [class.active]="isLinkActive('/gallery')" i18n>Gallery</a>
-        </li>
-        <li class="nav-item" *ngIf="isAlbumsAvailable()">
-          <a class="nav-link" [routerLink]="['/albums']" [class.active]="isLinkActive('/albums')" i18n>Albums</a>
-        </li>
-        <li class="nav-item" *ngIf="isFacesAvailable()">
-          <a class="nav-link" [routerLink]="['/faces']" [class.active]="isLinkActive('/faces')" i18n>Faces</a>
-        </li>
-      </ul>
-      <div class="text-lg-end">
-        <ul class="navbar-nav">
+<nav class="navbar  navbar-dark bg-dark  navbar-expand-md">
+  <a class="navbar-brand" [routerLink]="['/gallery']"
+     [queryParams]="queryService.getParams()">
+    <img src="assets/icon_inv.png" width="30" height="30" class="d-inline-block align-top" alt="">
+    <strong>{{title}}</strong>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation" (click)="collapsed = !collapsed">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-          <ng-content select="[navbar]"></ng-content>
-          <li class="nav-item divider-vertical">
+  <div class="collapse navbar-collapse" id="navbarNav" [collapse]="collapsed">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" >
+        <a class="nav-link"
+           [routerLink]="['/gallery']"
+           [queryParams]="queryService.getParams()" [class.active]="isLinkActive('/gallery')" i18n>Gallery</a>
+      </li>
+      <li class="nav-item" *ngIf="isAlbumsAvailable()">
+        <a class="nav-link" [routerLink]="['/albums']" [class.active]="isLinkActive('/albums')" i18n>Albums</a>
+      </li>
+      <li class="nav-item" *ngIf="isFacesAvailable()">
+        <a class="nav-link" [routerLink]="['/faces']" [class.active]="isLinkActive('/faces')" i18n>Faces</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav navbar-right ml-auto">
+      <ng-content select="[navbar]"></ng-content>
+      <li class="nav-item divider-vertical">
+      </li>
+      <li class="nav-item mr-2 ml-2" *ngIf="authenticationRequired" style=" white-space: nowrap;">
+        <span class="navbar-text" *ngIf="user.value">
+          <span class="oi oi-person"></span> {{user.value.name}}</span>
+      </li>
+      <li class="nav-item ml-2">
+        <app-language class="navbar-btn" isDark="true"></app-language>
+      </li>
+      <div class="btn-group" dropdown placement="bottom"
+           *ngIf="isAdmin() || authenticationRequired">
+        <button id="button-alignment" dropdownToggle
+                type="button" class="btn btn-dark dropdown-toggle"
+                aria-controls="dropdown-alignment">
+          <span class="oi oi-menu"></span>
+          <span *ngIf="isAdmin() && notificationService.numberOfNotifications>0"
+                class="navbar-badge badge badge-warning">{{notificationService.numberOfNotifications}}</span>
+        </button>
+        <ul id="dropdown-alignment" *dropdownMenu
+            class="dropdown-menu dropdown-menu-right"
+            role="menu" aria-labelledby="button-alignment">
+          <ng-content select="[navbar-menu]"></ng-content>
+          <li role="menuitem" *ngIf="isAdmin()">
+            <a class="dropdown-item"  [routerLink]="['/duplicates']">
+              <span class="oi oi-layers"></span>
+              <ng-container i18n>Duplicates</ng-container>
+            </a>
           </li>
-          <li class="nav-item me-2 ms-2 navbar-text">
-             <span *ngIf="authenticationRequired && user.value"
-                   style="white-space: nowrap;">
-                <span class="oi oi-person"></span> {{user.value.name}}
-              </span>
+          <li role="menuitem" *ngIf="isAdmin()">
+            <a class="dropdown-item" [routerLink]="['/admin']">
+              <span class="oi oi-wrench"></span>
+              <span *ngIf="notificationService.numberOfNotifications>0"
+                    class="badge">{{notificationService.numberOfNotifications}}</span>
+              <ng-container i18n>Settings</ng-container>
+            </a>
           </li>
-          <li class="nav-item divider-vertical">
-          </li>
-          <li class="nav-item ms-2">
-            <span>
-              <app-language class="navbar-btn" [isDark]="true"></app-language>
-            </span>
-          </li>
-          <li class="nav-item divider-vertical">
-          </li>
-          <li class="nav-item dropdown ">
-            <div class="btn-group" dropdown placement="bottom"
-                 *ngIf="isAdmin() || authenticationRequired">
-              <button id="button-alignment" dropdownToggle
-                      type="button" class="btn btn-dark dropdown-toggle"
-                      aria-controls="dropdown-alignment">
-                <span class="oi oi-menu"></span>
-                <span *ngIf="isAdmin() && notificationService.numberOfNotifications>0"
-                      class="navbar-badge badge badge-warning">{{notificationService.numberOfNotifications}}</span>
-              </button>
-              <ul id="dropdown-alignment" *dropdownMenu
-                  class="dropdown-menu dropdown-menu-right"
-                  role="menu" aria-labelledby="button-alignment">
-                <ng-content select="[navbar-menu]"></ng-content>
-                <li role="menuitem" *ngIf="isAdmin()">
-                  <a class="dropdown-item" [routerLink]="['/duplicates']">
-                    <span class="oi oi-layers"></span>
-                    <ng-container i18n>Duplicates</ng-container>
-                  </a>
-                </li>
-                <li role="menuitem" *ngIf="isAdmin()">
-                  <a class="dropdown-item" [routerLink]="['/admin']">
-                    <span class="oi oi-wrench"></span>
-                    <span *ngIf="notificationService.numberOfNotifications>0"
-                          class="badge">{{notificationService.numberOfNotifications}}</span>
-                    <ng-container i18n>Settings</ng-container>
-                  </a>
-                </li>
-                <li role="menuitem" *ngIf="authenticationRequired">
-                  <button class="dropdown-item btn btn-link" (click)="logout()">
-                    <span class="oi oi-account-logout"></span>
-                    <ng-container i18n>Logout</ng-container>
-                  </button>
-                </li>
-              </ul>
-            </div>
+          <li role="menuitem" *ngIf="authenticationRequired">
+            <button class="dropdown-item btn btn-link" (click)="logout()">
+              <span class="oi oi-account-logout"></span>
+              <ng-container i18n>Logout</ng-container>
+            </button>
           </li>
         </ul>
-
       </div>
-    </div>
-  </div>
+
+
+    </ul>
+
+
+  </div><!--/.nav-collapse -->
+
 </nav>
 <ng-content select="[body]"></ng-content>

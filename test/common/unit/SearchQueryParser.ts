@@ -68,20 +68,8 @@ describe('SearchQueryParser', () => {
       check({type: SearchQueryTypes.to_date, value: (Date.UTC(2020, 1, 1)), negate: true} as ToDateSearch);
 
       const parser = new SearchQueryParser(defaultQueryKeywords);
-
-      let query: RangeSearch = ({type: SearchQueryTypes.from_date, value: (Date.UTC(2020, 1, 4))} as FromDateSearch);
-      expect(parser.parse(defaultQueryKeywords.from + ':' + '2020-02-04'))
-        .to.deep.equals(query, parser.stringify(query));
-
-      expect(parser.parse(defaultQueryKeywords.from + ':' + '2020-2-4'))
-        .to.deep.equals(query, parser.stringify(query));
-
-      query = ({type: SearchQueryTypes.from_date, value: (Date.UTC(2020, 1, 1))} as FromDateSearch);
-      expect(parser.parse(defaultQueryKeywords.from + ':' + (new Date(query.value)).getFullYear() + '-' + '02'))
-        .to.deep.equals(query, parser.stringify(query));
-
       // test if date gets simplified on 1st of Jan.
-      query = {type: SearchQueryTypes.to_date, value: (Date.UTC(2020, 0, 1))} as ToDateSearch;
+      let query: RangeSearch = {type: SearchQueryTypes.to_date, value: (Date.UTC(2020, 0, 1))} as ToDateSearch;
       expect(parser.parse(defaultQueryKeywords.to + ':' + (new Date(query.value)).getFullYear()))
         .to.deep.equals(query, parser.stringify(query));
 

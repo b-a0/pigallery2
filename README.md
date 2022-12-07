@@ -18,7 +18,6 @@ This is a **fast** (like faster than your PC fast) **directory-first photo galle
 
 ⛔ Weakness:
  * 😥 Its simple. Shows what you have that's it. No gallery changes (photo delete, rotate, enhance, tag, organize, etc), your gallery folder is read-only.
- * 📁 Optimized for galleries with <100K photos with <5k photos/folder
 
 ## Live Demo
 Live Demo @ heroku: https://pigallery2.herokuapp.com/ 
@@ -47,7 +46,7 @@ For configuration and docker-compose files read more [here](docker/README.md) or
 
 
 ### 1.2 Direct Install (if you are familiar with Node.js and building npm packages from source)
-As an alternative, you can also directly [install Node.js](https://www.scaler.com/topics/javascript/install-node-js/) and the app and run it natively. 
+As an alternative, you can also directly install Node.js and the app and run it natively. 
 ### 1.2.0 [Install Node.js](https://nodejs.org/en/download/)
 Download and extract
 ```bash
@@ -92,7 +91,7 @@ npm start
 To configure it, run `PiGallery2` first to create `config.json` file, then edit it and restart.
 The app has a nice UI for settings, you may use that too. 
 
-Default user: `admin` pass: `admin`. (It is not possible to change the admin password, you need to create another user and delete the default `admin` user, see  [#220](https://github.com/bpatrik/pigallery2/issues/220))
+Default user: `admin` pass: `admin`. (It is not possible to change the admin password, you need to create an other user and delete the default `admin` user, see  #220)
 
 **Note**: First run, you might have file access issues and port 80 issue, see [#115](https://github.com/bpatrik/pigallery2/issues/115).
 Running `npm start -- --Server-port=8080` will start the app on port 8080 that does not require `root`

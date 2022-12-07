@@ -1,4 +1,4 @@
-import { IObjectManager } from './IObjectManager';
+import {IObjectManager} from './IObjectManager';
 
 export interface IVersionManager extends IObjectManager {
   getDataVersion(): Promise<string>;

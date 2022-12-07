@@ -3,6 +3,7 @@
     "width": 3024,
     "height": 4032
   },
+  "orientation": 6,
   "creationDate": 1518964712000,
   "fileSize": 256001,
   "cameraData": {
@@ -15,8 +16,9 @@
   },
   "positionData": {
     "GPSData": {
-      "longitude": -73.964251,
-      "latitude": 40.778451
+      "longitude": -73.96425083333334,
+      "latitude": 40.77845111111111,
+      "altitude": 2.2
     }
   }
 }

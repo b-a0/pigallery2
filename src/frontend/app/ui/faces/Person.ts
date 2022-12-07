@@ -1,6 +1,6 @@
-import { PersonDTO } from '../../../../common/entities/PersonDTO';
-import { Config } from '../../../../common/config/public/Config';
-import { Utils } from '../../../../common/Utils';
+import {PersonDTO} from '../../../../common/entities/PersonDTO';
+import {Config} from '../../../../common/config/public/Config';
+import {Utils} from '../../../../common/Utils';
 
 export class Person implements PersonDTO {
   isFavourite: boolean;
@@ -9,12 +9,10 @@ export class Person implements PersonDTO {
   name: string;
 
 
+  constructor() {
+  }
+
   public static getThumbnailUrl(that: PersonDTO): string {
-    return Utils.concatUrls(
-      Config.Client.urlBase,
-      '/api/person/',
-      encodeURIComponent(that.name),
-      '/thumbnail'
-    );
+    return Utils.concatUrls(Config.Client.urlBase, '/api/person/', encodeURIComponent(that.name), '/thumbnail');
   }
 }

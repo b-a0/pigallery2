@@ -1,5 +1,4 @@
 <button id="shareButton" class="nav-link btn  btn-link"
-        style="white-space:nowrap"
         type="button" [disabled]="!enabled" (click)="openModal(shareModal)">
   <span class="oi oi-share"></span>
   <ng-container i18n>Share</ng-container>
@@ -9,7 +8,8 @@
   <!-- sharing Modal-->
   <div class="modal-header">
     <h5 class="modal-title" i18n>Share</h5>
-    <button type="button"  class="btn-close"  (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
@@ -100,7 +100,7 @@
                  type="number" min="1" step="1"/>
         </div>
         <div class="col-4" style="padding-left: 1px">
-          <select class="form-select"
+          <select class="form-control"
                   [(ngModel)]="input.valid.type" (change)="update()" name="valid-to"
                   required>
             <option [ngValue]="ValidityTypes.Minutes" i18n>Minutes</option>

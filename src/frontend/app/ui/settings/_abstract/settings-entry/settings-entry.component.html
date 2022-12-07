@@ -5,7 +5,7 @@
 </ng-template>
 
 <ng-container *ngIf="state">
-  <div class="mb-3 row"
+  <div class="form-group row"
        [class.changed-settings]="changed"
        [class.docker-warning]="dockerWarning"
        [hidden]="shouldHide">
@@ -46,7 +46,7 @@
           [title]="title"
           (ngModelChange)="onChange($event)"
           [disabled]="state.readonly || disabled"
-          class="form-select" [(ngModel)]="state.value">
+          class="form-control" [(ngModel)]="state.value">
           <option *ngFor="let opt of optionsView" [ngValue]="opt.key">{{opt.value}}
           </option>
         </select>
@@ -60,13 +60,13 @@
           [title]="title"
           [disabled]="state.readonly || disabled"
           switch-on-color="primary"
-          [switch-inverse]="true"
+          switch-inverse="true"
           switch-off-text="Disabled"
           switch-on-text="Enabled"
           i18n-switch-off-text
           i18n-switch-on-text
-          [switch-handle-width]="100"
-          [switch-label-width]="20"
+          switch-handle-width="100"
+          switch-label-width="20"
           (ngModelChange)="onChange($event)"
           [(ngModel)]="state.value">
         </bSwitch>
@@ -81,7 +81,7 @@
                   [title]="title"
                   (ngModelChange)="onChange($event)"
                   [disabled]="state.readonly || disabled"
-                  class="form-select" [(ngModel)]="state.value[i]">
+                  class="form-control" [(ngModel)]="state.value[i]">
                   <option *ngFor="let opt of optionsView" [ngValue]="opt.key">{{opt.value}}
                   </option>
                 </select>
@@ -89,8 +89,8 @@
 
               </div>
               <ng-container *ngIf="state.type === 'array'">
-                <div class="col-auto pe-0">
-                  <button class="btn btn-secondary float-end"
+                <div class="col-auto pr-0">
+                  <button class="btn btn-secondary float-right"
                           [id]="'list_btn_'+idName+i"
                           [name]="'list_btn_'+idName+i" (click)="remove(i)"><span
                     class="oi oi-trash"></span>
@@ -101,7 +101,7 @@
           </ng-container>
           <ng-container *ngIf="state.type === 'array'">
             <div class="col-12 p-0">
-              <button class="btn btn-primary mt-1 float-end"
+              <button class="btn btn-primary mt-1 float-right"
                       [id]="'btn_add_'+idName"
                       [name]="'btn_add_'+idName"
                       (click)="AddNew()">+Add
@@ -114,7 +114,7 @@
             triggers="mouseenter:mouseleave"
             placement="bottom"
             [popover]="popTemplate"
-            class="oi oi-warning text-warning warning-icon ms-2" *ngIf="dockerWarning && changed"></span>
+            class="oi oi-warning text-warning warning-icon ml-2" *ngIf="dockerWarning && changed"></span>
         </div>
       </div>
       <small class="form-text text-muted" *ngIf="description">{{description}}

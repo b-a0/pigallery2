@@ -6,9 +6,7 @@ import {DirectoryEntity} from '../../../../../src/backend/model/database/sql/eni
 import {ParentDirectoryDTO} from '../../../../../src/common/entities/DirectoryDTO';
 import {Connection} from 'typeorm';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const deepEqualInAnyOrder = require('deep-equal-in-any-order');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const chai = require('chai');
 
 chai.use(deepEqualInAnyOrder);
@@ -24,13 +22,15 @@ describe = DBTestHelper.describe();
 
 class GalleryManagerTest extends GalleryManager {
 
-  public async getDirIdAndTime(connection: Connection, directoryName: string, directoryParent: string) {
-    return super.getDirIdAndTime(connection, directoryName, directoryParent);
+
+  public async selectParentDir(connection: Connection, directoryName: string, directoryParent: string): Promise<ParentDirectoryDTO> {
+    return super.selectParentDir(connection, directoryName, directoryParent);
   }
 
-  public async getParentDirFromId(connection: Connection, dir: number): Promise<ParentDirectoryDTO> {
-    return super.getParentDirFromId(connection, dir);
+  public async fillParentDir(connection: Connection, dir: ParentDirectoryDTO): Promise<void> {
+    return super.fillParentDir(connection, dir);
   }
+
 }
 
 describe('GalleryManager', (sqlHelper: DBTestHelper) => {

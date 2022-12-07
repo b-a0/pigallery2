@@ -1,14 +1,16 @@
-import { UserDTO, UserRoles } from '../../../../common/entities/UserDTO';
-import { IUserManager } from '../interfaces/IUserManager';
-import { ProjectPath } from '../../../ProjectPath';
-import { Utils } from '../../../../common/Utils';
+import {UserDTO, UserRoles} from '../../../../common/entities/UserDTO';
+import {IUserManager} from '../interfaces/IUserManager';
+import {ProjectPath} from '../../../ProjectPath';
+import {Utils} from '../../../../common/Utils';
 import * as fs from 'fs';
 import * as path from 'path';
-import { PasswordHelper } from '../../PasswordHelper';
+import {PasswordHelper} from '../../PasswordHelper';
+
 
 export class UserManager implements IUserManager {
-  private db: { users?: UserDTO[]; idCounter?: number } = {};
+  private db: { users?: UserDTO[], idCounter?: number } = {};
   private readonly dbPath: string;
+
 
   constructor() {
     this.dbPath = path.join(ProjectPath.DBFolder, 'users.db');
@@ -23,14 +25,12 @@ export class UserManager implements IUserManager {
     if (!this.db.users) {
       this.db.users = [];
       // TODO: remove defaults
-      this.createUser({
-        name: 'admin',
-        password: 'admin',
-        role: UserRoles.Admin,
-      } as UserDTO);
+      this.createUser({name: 'admin', password: 'admin', role: UserRoles.Admin} as UserDTO);
     }
     this.saveDB();
+
   }
+
 
   public async findOne(filter: any): Promise<UserDTO> {
     const result = await this.find(filter);
@@ -47,7 +47,7 @@ export class UserManager implements IUserManager {
     const users = this.db.users.slice();
     let i = users.length;
     while (i--) {
-      if (pass && !PasswordHelper.comparePassword(pass, users[i].password)) {
+      if (pass && !(PasswordHelper.comparePassword(pass, users[i].password))) {
         users.splice(i, 1);
         continue;
       }
@@ -86,6 +86,10 @@ export class UserManager implements IUserManager {
     }
   }
 
+  public async changePassword(request: any): Promise<void> {
+    throw new Error('not implemented'); // TODO: implement
+  }
+
   private loadDB(): void {
     const data = fs.readFileSync(this.dbPath, 'utf8');
     this.db = JSON.parse(data);
@@ -94,4 +98,5 @@ export class UserManager implements IUserManager {
   private saveDB(): void {
     fs.writeFileSync(this.dbPath, JSON.stringify(this.db));
   }
+
 }

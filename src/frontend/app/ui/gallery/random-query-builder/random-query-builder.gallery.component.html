@@ -8,7 +8,8 @@
   <!-- sharing Modal-->
   <div class="modal-header">
     <h5 class="modal-title" i18n>Random Link creator</h5>
-    <button type="button"  class="btn-close"  (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
@@ -35,7 +36,7 @@
         id="album-search-query-builder"
         name="album-search-query-builder"
         [(ngModel)]="searchQueryDTO"
-        (change)="onQueryChange()">
+        (change)="onQueryChange()" >
       </app-gallery-search-query-builder>
 
 

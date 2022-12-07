@@ -1,124 +1,82 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  Input,
-  OnDestroy,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import {
-  AutoCompleteService,
-  RenderableAutoCompleteItem,
-} from '../autocomplete.service';
-import {
-  MetadataSearchQueryTypes,
-  SearchQueryTypes,
-} from '../../../../../../common/entities/SearchQueryDTO';
-import { Config } from '../../../../../../common/config/public/Config';
-import {
-  ControlValueAccessor,
-  FormControl,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
-import { AutoCompleteRenderItem } from '../AutoCompleteRenderItem';
+import {Component, ElementRef, EventEmitter, forwardRef, Input, OnDestroy, Output, ViewChild} from '@angular/core';
+import {Router, RouterLink} from '@angular/router';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {AutoCompleteService, RenderableAutoCompleteItem} from '../autocomplete.service';
+import {MetadataSearchQueryTypes, SearchQueryTypes} from '../../../../../../common/entities/SearchQueryDTO';
+import {Config} from '../../../../../../common/config/public/Config';
+import {ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator} from '@angular/forms';
+import {AutoCompleteRenderItem} from '../AutoCompleteRenderItem';
 
 @Component({
   selector: 'app-gallery-search-field-base',
   templateUrl: './search-field-base.gallery.component.html',
   styleUrls: ['./search-field-base.gallery.component.css'],
   providers: [
-    AutoCompleteService,
-    RouterLink,
+    AutoCompleteService, RouterLink,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => GallerySearchFieldBaseComponent),
-      multi: true,
+      multi: true
     },
     {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => GallerySearchFieldBaseComponent),
-      multi: true,
-    },
-  ],
+      multi: true
+    }
+  ]
 })
-export class GallerySearchFieldBaseComponent
-  implements ControlValueAccessor, Validator, OnDestroy
-{
+export class GallerySearchFieldBaseComponent implements ControlValueAccessor, Validator, OnDestroy {
   @Input() placeholder = 'Search';
   @Output() search = new EventEmitter<void>();
 
-  @ViewChild('SearchField', { static: false }) searchField: ElementRef;
-  @ViewChild('SearchHintField', { static: false }) searchHintField: ElementRef;
+  @ViewChild('SearchField', {static: false}) searchField: ElementRef;
+  @ViewChild('SearchHintField', {static: false}) searchHintField: ElementRef;
+
 
   autoCompleteRenders: AutoCompleteRenderItem[] = [];
   public rawSearchText = '';
   mouseOverAutoComplete = false;
   readonly SearchQueryTypes: typeof SearchQueryTypes;
-  public readonly MetadataSearchQueryTypes: {
-    value: string;
-    key: SearchQueryTypes;
-  }[];
+  public readonly MetadataSearchQueryTypes: { value: string; key: SearchQueryTypes }[];
   public highlightedAutoCompleteItem = -1;
   private cache = {
     lastAutocomplete: '',
-    lastInstantSearch: '',
+    lastInstantSearch: ''
   };
   private autoCompleteItemsSubscription: Subscription = null;
   private autoCompleteItems: BehaviorSubject<RenderableAutoCompleteItem[]>;
 
-  constructor(
-    private autoCompleteService: AutoCompleteService,
-    public router: Router
-  ) {
+  constructor(private autoCompleteService: AutoCompleteService,
+              public router: Router) {
+
     this.SearchQueryTypes = SearchQueryTypes;
-    this.MetadataSearchQueryTypes = MetadataSearchQueryTypes.map(
-      (v): { value: string; key: SearchQueryTypes } => ({
-        key: v,
-        value: SearchQueryTypes[v],
-      })
-    );
+    this.MetadataSearchQueryTypes = MetadataSearchQueryTypes.map((v): { value: string; key: SearchQueryTypes } => ({
+      key: v,
+      value: SearchQueryTypes[v]
+    }));
+
   }
 
   get SearchHint(): string {
     if (!this.rawSearchText) {
       return '';
     }
-    if (
-      !this.autoCompleteItems ||
-      !this.autoCompleteItems.value ||
-      this.autoCompleteItems.value.length === 0
-    ) {
+    if (!this.autoCompleteItems ||
+      !this.autoCompleteItems.value || this.autoCompleteItems.value.length === 0) {
       return this.rawSearchText;
     }
-    const itemIndex =
-      this.highlightedAutoCompleteItem < 0
-        ? 0
-        : this.highlightedAutoCompleteItem;
+    const itemIndex = this.highlightedAutoCompleteItem < 0 ? 0 : this.highlightedAutoCompleteItem;
     const searchText = this.getAutocompleteToken();
     if (searchText.current === '') {
-      return (
-        this.rawSearchText + this.autoCompleteItems.value[itemIndex].queryHint
-      );
+      return this.rawSearchText + this.autoCompleteItems.value[itemIndex].queryHint;
     }
-    if (
-      this.autoCompleteItems.value[0].queryHint.startsWith(searchText.current)
-    ) {
-      return (
-        this.rawSearchText +
-        this.autoCompleteItems.value[itemIndex].queryHint.substr(
-          searchText.current.length
-        )
-      );
+    if (this.autoCompleteItems.value[0].queryHint.startsWith(searchText.current)) {
+      return this.rawSearchText + this.autoCompleteItems
+        .value[itemIndex].queryHint.substr(searchText.current.length);
     }
     return this.rawSearchText;
   }
+
 
   ngOnDestroy(): void {
     if (this.autoCompleteItemsSubscription) {
@@ -127,26 +85,26 @@ export class GallerySearchFieldBaseComponent
     }
   }
 
-  getAutocompleteToken(): { current: string; prev: string } {
+  getAutocompleteToken(): { current: string, prev: string } {
     if (this.rawSearchText.trim().length === 0) {
-      return { current: '', prev: '' };
+      return {current: '', prev: ''};
     }
     const tokens = this.rawSearchText.split(' ');
     return {
       current: tokens[tokens.length - 1],
-      prev: tokens.length > 2 ? tokens[tokens.length - 2] : '',
+      prev: (tokens.length > 2 ? tokens[tokens.length - 2] : '')
     };
+
   }
 
   onSearchChange(event: KeyboardEvent): void {
     const searchText = this.getAutocompleteToken();
-    if (
-      Config.Client.Search.AutoComplete.enabled &&
-      this.cache.lastAutocomplete !== searchText.current
-    ) {
+    if (Config.Client.Search.AutoComplete.enabled &&
+      this.cache.lastAutocomplete !== searchText.current) {
       this.cache.lastAutocomplete = searchText.current;
       this.autocomplete(searchText).catch(console.error);
     }
+
   }
 
   public setMouseOverAutoComplete(value: boolean): void {
@@ -158,6 +116,7 @@ export class GallerySearchFieldBaseComponent
       this.autoCompleteRenders = [];
     }
   }
+
 
   applyHint($event: any): void {
     if ($event.target.selectionStart !== this.rawSearchText.length) {
@@ -171,18 +130,13 @@ export class GallerySearchFieldBaseComponent
     }
 
     // force apply selected autocomplete item
-    this.applyAutoComplete(
-      this.autoCompleteRenders[this.highlightedAutoCompleteItem]
-    );
+    this.applyAutoComplete(this.autoCompleteRenders[this.highlightedAutoCompleteItem]);
   }
 
   applyAutoComplete(item: AutoCompleteRenderItem): void {
     const token = this.getAutocompleteToken();
-    this.rawSearchText =
-      this.rawSearchText.substr(
-        0,
-        this.rawSearchText.length - token.current.length
-      ) + item.queryHint;
+    this.rawSearchText = this.rawSearchText.substr(0, this.rawSearchText.length - token.current.length)
+      + item.queryHint;
     this.onChange();
     this.emptyAutoComplete();
   }
@@ -206,38 +160,31 @@ export class GallerySearchFieldBaseComponent
   }
 
   selectAutocompleteDown(): void {
-    if (
-      this.autoCompleteItems &&
-      this.highlightedAutoCompleteItem < this.autoCompleteItems.value.length - 1
-    ) {
+    if (this.autoCompleteItems &&
+      this.highlightedAutoCompleteItem < this.autoCompleteItems.value.length - 1) {
       this.highlightedAutoCompleteItem++;
     }
   }
 
   OnEnter($event: any): boolean {
     // no autocomplete shown, just search whatever is there.
-    if (
-      this.autoCompleteRenders.length === 0 ||
-      this.highlightedAutoCompleteItem === -1
-    ) {
+    if (this.autoCompleteRenders.length === 0 || this.highlightedAutoCompleteItem === -1) {
       this.search.emit();
       return false;
     }
     // search selected autocomplete
-    this.searchAutoComplete(
-      this.autoCompleteRenders[this.highlightedAutoCompleteItem]
-    );
+    this.searchAutoComplete(this.autoCompleteRenders[this.highlightedAutoCompleteItem]);
     return false;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public onTouched(): void {}
+  public onTouched(): void {
+  }
 
-  public writeValue(obj: string): void {
+  public writeValue(obj: any): void {
     this.rawSearchText = obj;
   }
 
-  registerOnChange(fn: (_: unknown) => void): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.propagateChange = fn;
   }
 
@@ -250,12 +197,11 @@ export class GallerySearchFieldBaseComponent
   }
 
   validate(control: FormControl): ValidationErrors {
-    return { required: true };
+    return {required: true};
   }
 
   Scrolled(): void {
-    this.searchHintField.nativeElement.scrollLeft =
-      this.searchField.nativeElement.scrollLeft;
+    this.searchHintField.nativeElement.scrollLeft = this.searchField.nativeElement.scrollLeft;
   }
 
   private emptyAutoComplete(): void {
@@ -263,60 +209,43 @@ export class GallerySearchFieldBaseComponent
     this.autoCompleteRenders = [];
   }
 
-  private async autocomplete(searchText: {
-    current: string;
-    prev: string;
-  }): Promise<void> {
+  private async autocomplete(searchText: { current: string, prev: string }): Promise<void> {
     if (!Config.Client.Search.AutoComplete.enabled) {
       return;
     }
 
-    if (this.rawSearchText.trim().length > 0) {
-      // are we searching for anything?
+    if (this.rawSearchText.trim().length > 0) { // are we searching for anything?
       try {
         if (this.autoCompleteItemsSubscription) {
           this.autoCompleteItemsSubscription.unsubscribe();
           this.autoCompleteItemsSubscription = null;
         }
-        this.autoCompleteItems =
-          this.autoCompleteService.autoComplete(searchText);
-        this.autoCompleteItemsSubscription = this.autoCompleteItems.subscribe(
-          (): void => {
-            this.showSuggestions(
-              this.autoCompleteItems.value,
-              searchText.current
-            );
-          }
-        );
+        this.autoCompleteItems = this.autoCompleteService.autoComplete(searchText);
+        this.autoCompleteItemsSubscription = this.autoCompleteItems.subscribe((): void => {
+          this.showSuggestions(this.autoCompleteItems.value, searchText.current);
+        });
       } catch (error) {
         console.error(error);
       }
+
     } else {
       this.emptyAutoComplete();
     }
   }
 
-  private showSuggestions(
-    suggestions: RenderableAutoCompleteItem[],
-    searchText: string
-  ): void {
+  private showSuggestions(suggestions: RenderableAutoCompleteItem[], searchText: string): void {
     this.emptyAutoComplete();
     suggestions.forEach((item: RenderableAutoCompleteItem): void => {
-      const renderItem = new AutoCompleteRenderItem(
-        item.text,
-        this.autoCompleteService.getPrefixLessSearchText(searchText),
-        item.type,
-        item.queryHint,
-        item.notSearchable
-      );
+      const renderItem = new AutoCompleteRenderItem(item.text, this.autoCompleteService.getPrefixLessSearchText(searchText),
+        item.type, item.queryHint, item.notSearchable);
       this.autoCompleteRenders.push(renderItem);
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
-  private propagateChange = (_: string): void => {};
+  private propagateChange = (_: any): void => {
+  };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-function
-  private propagateTouch = (_: never): void => {};
+  private propagateTouch = (_: any): void => {
+  };
 }
 

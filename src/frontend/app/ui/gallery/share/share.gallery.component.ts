@@ -1,14 +1,16 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { Utils } from '../../../../../common/Utils';
-import { ShareService } from '../share.service';
-import { ContentService } from '../content.service';
-import { ContentWrapper } from '../../../../../common/entities/ConentWrapper';
-import { SharingDTO } from '../../../../../common/entities/SharingDTO';
-import { Config } from '../../../../../common/config/public/Config';
-import { NotificationService } from '../../../model/notification.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Utils} from '../../../../../common/Utils';
+import {ShareService} from '../share.service';
+import {ContentService} from '../content.service';
+import {ContentWrapper} from '../../../../../common/entities/ConentWrapper';
+import {SharingDTO} from '../../../../../common/entities/SharingDTO';
+import {Config} from '../../../../../common/config/public/Config';
+import {NotificationService} from '../../../model/notification.service';
+import {} from '../../../../../common/entities/DirectoryDTO';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {BsModalRef} from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import {Subscription} from 'rxjs';
+
 
 @Component({
   selector: 'app-gallery-share',
@@ -16,6 +18,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./share.gallery.component.css'],
 })
 export class GalleryShareComponent implements OnInit, OnDestroy {
+
   enabled = true;
   url = '';
 
@@ -23,9 +26,9 @@ export class GalleryShareComponent implements OnInit, OnDestroy {
     includeSubfolders: true,
     valid: {
       amount: 30,
-      type: ValidityTypes.Days as ValidityTypes,
+      type: ValidityTypes.Days as ValidityTypes
     },
-    password: null as string,
+    password: null as string
   };
   currentDir = '';
   sharing: SharingDTO = null;
@@ -37,32 +40,27 @@ export class GalleryShareComponent implements OnInit, OnDestroy {
 
   text = {
     Yes: 'Yes',
-    No: 'No',
+    No: 'No'
   };
 
-  constructor(
-    private sharingService: ShareService,
-    public galleryService: ContentService,
-    private notification: NotificationService,
-    private modalService: BsModalService
-  ) {
+  constructor(private sharingService: ShareService,
+              public galleryService: ContentService,
+              private  notification: NotificationService,
+              private modalService: BsModalService) {
+
     this.text.Yes = $localize`Yes`;
     this.text.No = $localize`No`;
   }
 
+
   ngOnInit(): void {
-    this.contentSubscription = this.galleryService.content.subscribe(
-      (content: ContentWrapper) => {
-        this.enabled = !!content.directory;
-        if (!this.enabled) {
-          return;
-        }
-        this.currentDir = Utils.concatUrls(
-          content.directory.path,
-          content.directory.name
-        );
+    this.contentSubscription = this.galleryService.content.subscribe((content: ContentWrapper) => {
+      this.enabled = !!content.directory;
+      if (!this.enabled) {
+        return;
       }
-    );
+      this.currentDir = Utils.concatUrls((content.directory).path, (content.directory).name);
+    });
   }
 
   ngOnDestroy(): void {
@@ -92,27 +90,18 @@ export class GalleryShareComponent implements OnInit, OnDestroy {
       return;
     }
     this.url = $localize`loading..`;
-    this.sharing = await this.sharingService.updateSharing(
-      this.currentDir,
-      this.sharing.id,
-      this.input.includeSubfolders,
-      this.input.password,
-      this.calcValidity()
-    );
+    this.sharing = await this.sharingService.updateSharing(this.currentDir,
+      this.sharing.id, this.input.includeSubfolders, this.input.password, this.calcValidity());
     this.url = Config.Client.publicUrl + '/share/' + this.sharing.sharingKey;
   }
 
   async get(): Promise<void> {
     this.url = $localize`loading..`;
-    this.sharing = await this.sharingService.createSharing(
-      this.currentDir,
-      this.input.includeSubfolders,
-      this.calcValidity()
-    );
+    this.sharing = await this.sharingService.createSharing(this.currentDir, this.input.includeSubfolders, this.calcValidity());
     this.url = Config.Client.publicUrl + '/share/' + this.sharing.sharingKey;
   }
 
-  async openModal(template: TemplateRef<unknown>): Promise<void> {
+  async openModal(template: TemplateRef<any>): Promise<void> {
     await this.get();
     this.input.password = '';
     if (this.modalRef) {
@@ -131,6 +120,8 @@ export class GalleryShareComponent implements OnInit, OnDestroy {
     this.modalRef = null;
     this.sharing = null;
   }
+
+
 }
 
 

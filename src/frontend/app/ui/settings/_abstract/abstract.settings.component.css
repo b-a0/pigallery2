@@ -18,11 +18,11 @@
 }
 
 .changed-settings input {
-  border-color: var(--bs-primary);
+  border-color: #007bff;
   border-width: 1.5px;
 }
 
 .changed-settings label {
-  color: var(--bs-primary);
+  color: #007bff;
   font-weight: bold;
 }

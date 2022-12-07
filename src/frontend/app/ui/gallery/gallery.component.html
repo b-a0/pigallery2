@@ -2,8 +2,8 @@
 <app-frame>
 
   <ng-container navbar>
-    <li class="nav-item navbar-text"  *ngIf="countDown">
-      <span>
+    <li class="nav-item" *ngIf="countDown">
+      <span class="navbar-text">
         <ng-container i18n>Link availability</ng-container>
         : {{countDown.day}}
         <ng-container i18n>days</ng-container>
@@ -12,10 +12,10 @@
         :{{("0" + countDown.second).slice(-2)}}
       </span>
     </li>
-    <li  class="nav-item" *ngIf="showSearchBar">
+    <li class="nav-item" *ngIf="showSearchBar">
       <app-gallery-search></app-gallery-search>
     </li>
-    <li class="nav-item"  *ngIf="showShare">
+    <li class="nav-item" *ngIf="showShare">
       <app-gallery-share></app-gallery-share>
     </li>
   </ng-container>
@@ -59,10 +59,9 @@
             class="oi oi-chevron-{{blogOpen ? 'top' : 'bottom'}}"></span>
           </button>
         </div>
-        <app-gallery-map
-          *ngIf="(isPhotoWithLocation || (directoryContent?.metaFile | gpxFiles)?.length > 0) && mapEnabled"
-          [photos]="directoryContent?.media | photosOnly"
-          [gpxFiles]="directoryContent?.metaFile | gpxFiles"></app-gallery-map>
+        <app-gallery-map *ngIf="(isPhotoWithLocation || (directoryContent?.metaFile | gpxFiles)?.length > 0) && mapEnabled"
+                         [photos]="directoryContent?.media | photosOnly"
+                         [gpxFiles]="directoryContent?.metaFile | gpxFiles"></app-gallery-map>
       </div>
       <app-gallery-grid [media]="directoryContent?.media"
                         [lightbox]="lightbox"></app-gallery-grid>

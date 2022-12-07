@@ -1,80 +1,75 @@
-<div class="container-fluid mb-2 pt-1 pb-1">
-  <nav class="d-md-flex" aria-label="breadcrumb">
-    <div class="col-12 col-md-auto">
-    <ol *ngIf="isDirectory" id="directory-path" class="mb-0 mt-1 breadcrumb">
-      <li *ngFor="let path of Routes" class="breadcrumb-item">
-        <a *ngIf="path.route" [routerLink]="['/gallery',path.route]"
-           [queryParams]="queryService.getParams()">{{path.name}}</a>
-        <ng-container *ngIf="!path.route">{{path.name}}</ng-container>
-      </li>
-    </ol>
+<nav class="nav-container" aria-label="breadcrumb">
+  <ol *ngIf="isDirectory" id="directory-path" class="breadcrumb">
+    <li *ngFor="let path of Routes" class="breadcrumb-item">
+      <a *ngIf="path.route" [routerLink]="['/gallery',path.route]"
+         [queryParams]="queryService.getParams()">{{path.name}}</a>
+      <ng-container *ngIf="!path.route">{{path.name}}</ng-container>
+    </li>
+  </ol>
 
-    <ol *ngIf="!isDirectory" class="breadcrumb">
-      <li class="active">
-        <ng-container i18n>Searching for:</ng-container>
-        <strong> {{galleryService.content.value?.searchResult?.searchQuery | searchQuery}}</strong>
-      </li>
-    </ol>
+  <ol *ngIf="!isDirectory" class="breadcrumb">
+    <li class="active">
+      <ng-container i18n>Searching for:</ng-container>
+      <strong> {{galleryService.content.value?.searchResult?.searchQuery | searchQuery}}</strong>
+    </li>
+  </ol>
 
-    </div>
-    <div class="ms-auto text-end col-12 col-md-auto">
-      <ng-container *ngIf="ItemCount> 0 && config.Client.Other.NavBar.showItemCount">
-        <div class="photos-count">
-          {{ItemCount}} <span i18n>items</span>
-        </div>
-        <div class="divider">&nbsp;</div>
-      </ng-container>
+  <div class="right-side">
+    <ng-container *ngIf="ItemCount> 0 && config.Client.Other.NavBar.showItemCount">
+      <div class="photos-count">
+        {{ItemCount}} <span i18n>items</span>
+      </div>
+      <div class="divider">&nbsp;</div>
+    </ng-container>
 
-      <ng-container *ngIf="config.Client.Other.enableDownloadZip && isDirectory && ItemCount > 0">
-        <a [href]="getDownloadZipLink()"
-           class="btn  btn-navbar">
+    <ng-container *ngIf="config.Client.Other.enableDownloadZip && isDirectory && ItemCount > 0">
+      <a [href]="getDownloadZipLink()"
+         class="btn  btn-navbar">
          <span class="oi oi-data-transfer-download"
                title="download" i18n-title></span>
-        </a>
-        <div class="divider">&nbsp;</div>
-      </ng-container>
+      </a>
+      <div class="divider">&nbsp;</div>
+    </ng-container>
 
-      <ng-container *ngIf="config.Client.Other.enableDirectoryFlattening && isDirectory">
-        <a
-          [routerLink]="['/search', getDirectoryFlattenSearchQuery()]"
-          class="btn  btn-navbar">
+    <ng-container *ngIf="config.Client.Other.enableDirectoryFlattening && isDirectory">
+      <a
+        [routerLink]="['/search', getDirectoryFlattenSearchQuery()]"
+        class="btn  btn-navbar">
          <span class="oi oi-fork"
                title="Flatten directory" i18n-title></span>
-        </a>
-        <div class="divider">&nbsp;</div>
-      </ng-container>
-      <ng-container *ngIf="ItemCount> 0">
-        <a class="btn  btn-navbar"
-           [class.btn-secondary]="showFilters"
-           (click)="showFilters = ! showFilters">
+      </a>
+      <div class="divider">&nbsp;</div>
+    </ng-container>
+    <ng-container *ngIf="ItemCount> 0">
+      <a class="btn  btn-navbar"
+         [class.btn-secondary]="showFilters"
+         (click)="showFilters = ! showFilters">
          <span class="oi oi-spreadsheet"
                title="Filters" i18n-title></span>
-        </a>
-        <div class="divider">&nbsp;</div>
-      </ng-container>
-      <div class="btn-group" dropdown placement="bottom right">
-        <button id="button-alignment" dropdownToggle type="button"
-                class="btn btn-secondary dropdown-toggle"
-                [ngClass]="{'btn-secondary':sortingService.sorting.value !== DefaultSorting}"
-                aria-controls="dropdown-alignment"
-                [innerHTML]="sortingService.sorting.value | iconizeSorting">
-        </button>
-        <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right"
-            role="menu" aria-labelledby="button-alignment">
-          <li class="row dropdown-item" role="menuitem"
-              *ngFor="let type of sortingMethodsType"
-              (click)="setSorting(type.key)">
-            <div class="col-3">
-              <div [outerHTML]="type.key | iconizeSorting"></div>
-            </div>
-            <div class="col-9">{{type.key | stringifySorting}}</div>
-          </li>
-        </ul>
-      </div>
+      </a>
+      <div class="divider">&nbsp;</div>
+    </ng-container>
+    <div class="btn-group" dropdown placement="bottom right">
+      <button id="button-alignment" dropdownToggle type="button"
+              class="btn btn-secondary dropdown-toggle"
+              [ngClass]="{'btn-secondary':sortingService.sorting.value !== DefaultSorting}"
+              aria-controls="dropdown-alignment"
+              [innerHTML]="sortingService.sorting.value | iconizeSorting">
+      </button>
+      <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu dropdown-menu-right"
+          role="menu" aria-labelledby="button-alignment">
+        <li class="row dropdown-item" role="menuitem"
+            *ngFor="let type of sortingMethodsType"
+            (click)="setSorting(type.key)">
+          <div class="col-3">
+            <div [outerHTML]="type.key | iconizeSorting"></div>
+          </div>
+          <div class="col-9">{{type.key | stringifySorting}}</div>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
 
+</nav>
 
-</div>
-
-  <app-gallery-filter *ngIf="showFilters && ItemCount> 0"></app-gallery-filter>
+<app-gallery-filter *ngIf="showFilters && ItemCount> 0"></app-gallery-filter>

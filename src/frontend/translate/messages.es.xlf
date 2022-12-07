@@ -1961,7 +1961,7 @@
         <target>Permitir la ejecución en paralelo</target>
       </trans-unit>
       <trans-unit id="6820090689099376148" datatype="html">
-        <source>Enables the job to start even if another job is already running. </source>
+        <source>Enables the job to start even if an other job is already running. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/frontend/app/ui/settings/jobs/jobs.settings.component.html</context>
           <context context-type="linenumber">143,144</context>

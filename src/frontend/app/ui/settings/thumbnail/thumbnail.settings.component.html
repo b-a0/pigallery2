@@ -22,7 +22,7 @@
         i18n-description i18n-name
         [ngModel]="states.client.iconSize"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
 
@@ -32,7 +32,7 @@
         placeholder="240; 480"
         [ngModel]="states.client.thumbnailSizes"
         [simplifiedMode]="simplifiedMode"
-        [required]="true">
+        required="true">
         <small class="form-text text-muted">
           <ng-container i18n>Size of the thumbnails.</ng-container>
           <br/>
@@ -47,11 +47,13 @@
       </app-settings-entry>
 
 
-      <button class="btn btn-success float-end"
+
+
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

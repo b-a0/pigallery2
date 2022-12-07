@@ -1,28 +1,16 @@
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
-import {
-  ParentDirectoryDTO,
-  SubDirectoryDTO,
-} from '../../../../../common/entities/DirectoryDTO';
-import { MediaEntity } from './MediaEntity';
-import { FileEntity } from './FileEntity';
-import { columnCharsetCS } from './EntityUtils';
-import { MediaDTO } from '../../../../../common/entities/MediaDTO';
+import {Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique} from 'typeorm';
+import {ParentDirectoryDTO, SubDirectoryDTO} from '../../../../../common/entities/DirectoryDTO';
+import {MediaEntity} from './MediaEntity';
+import {FileEntity} from './FileEntity';
+import {columnCharsetCS} from './EntityUtils';
+import {MediaDTO} from '../../../../../common/entities/MediaDTO';
 
 @Entity()
 @Unique(['name', 'path'])
-export class DirectoryEntity
-  implements ParentDirectoryDTO<MediaDTO>, SubDirectoryDTO<MediaDTO>
-{
+export class DirectoryEntity implements ParentDirectoryDTO<MediaDTO>, SubDirectoryDTO<MediaDTO> {
+
   @Index()
-  @PrimaryGeneratedColumn({ unsigned: true })
+  @PrimaryGeneratedColumn({unsigned: true})
   id: number;
 
   @Index()
@@ -37,11 +25,10 @@ export class DirectoryEntity
    * last time the directory was modified (from outside, eg.: a new media was added)
    */
   @Column('bigint', {
-    unsigned: true,
-    transformer: {
-      from: (v) => parseInt(v, 10),
-      to: (v) => v,
-    },
+    unsigned: true, transformer: {
+      from: v => parseInt(v, 10),
+      to: v => v
+    }
   })
   public lastModified: number;
 
@@ -49,41 +36,37 @@ export class DirectoryEntity
    * Last time the directory was fully scanned, not only for a few media to create a preview
    */
   @Column({
-    type: 'bigint',
-    nullable: true,
-    unsigned: true,
-    transformer: {
-      from: (v) => parseInt(v, 10) || null,
-      to: (v) => v,
-    },
+    type: 'bigint', nullable: true, unsigned: true, transformer: {
+      from: v => parseInt(v, 10) || null,
+      to: v => v
+    }
   })
   public lastScanned: number;
 
   isPartial?: boolean;
 
-  @Column('mediumint', { unsigned: true })
+  @Column('smallint', {unsigned: true})
   mediaCount: number;
 
   @Index()
-  @ManyToOne((type) => DirectoryEntity, (directory) => directory.directories, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(type => DirectoryEntity, directory => directory.directories, {onDelete: 'CASCADE'})
   public parent: DirectoryEntity;
 
-  @OneToMany((type) => DirectoryEntity, (dir) => dir.parent)
+  @OneToMany(type => DirectoryEntity, dir => dir.parent)
   public directories: DirectoryEntity[];
 
   // not saving to database, it is only assigned when querying the DB
-  @ManyToOne((type) => MediaEntity, { onDelete: 'SET NULL' })
+  @ManyToOne(type => MediaEntity, {onDelete: 'SET NULL'})
   public preview: MediaEntity;
 
   // On galley change, preview will be invalid
-  @Column({ type: 'boolean', default: false })
+  @Column({type: 'boolean', default: false})
   validPreview: boolean;
 
-  @OneToMany((type) => MediaEntity, (media) => media.directory)
+  @OneToMany(type => MediaEntity, media => media.directory)
   public media: MediaEntity[];
 
-  @OneToMany((type) => FileEntity, (file) => file.directory)
+  @OneToMany(type => FileEntity, file => file.directory)
   public metaFile: FileEntity[];
+
 }

@@ -11,7 +11,7 @@
         [optionMap]="dbTypesMap"
         [ngModel]="states.type"
         i18n-name
-        [required]="true">
+        required="true">
         <small *ngIf="states.type.value == DatabaseType.mysql"
                class="form-text text-muted" i18n>Install manually mysql node module to use mysql (npm install mysql)
         </small>
@@ -24,7 +24,7 @@
         [ngModel]="states.dbFolder"
         i18n-name i18n-description
         [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
-        [required]="true">
+        required="true">
       </app-settings-entry>
 
 
@@ -35,14 +35,14 @@
           name="Host"
           [ngModel]="states.mysql.host"
           i18n-name
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
         <app-settings-entry
           name="Port"
           [ngModel]="states.mysql.port"
           i18n-name
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
 
@@ -50,7 +50,7 @@
           name="Database"
           [ngModel]="states.mysql.database"
           i18n-name
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
         <app-settings-entry
@@ -58,7 +58,7 @@
           [ngModel]="states.mysql.username"
           placeholder="username"
           i18n-name
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
 
@@ -67,17 +67,17 @@
           [ngModel]="states.mysql.password"
           placeholder="password"
           i18n-name
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
       </ng-container>
 
 
-      <button class="btn btn-success float-end"
+      <button class="btn btn-success float-right"
               [disabled]="!settingsForm.form.valid || !changed || inProgress"
               (click)="save()" i18n>Save
       </button>
-      <button class="btn btn-secondary float-end"
+      <button class="btn btn-secondary float-right"
               [disabled]=" !changed || inProgress"
               (click)="reset()" i18n>Reset
       </button>

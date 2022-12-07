@@ -1,73 +1,56 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IndexingSettingsService } from './indexing.settings.service';
-import { AuthenticationService } from '../../../model/network/authentication.service';
-import { NavigationService } from '../../../model/navigation.service';
-import { NotificationService } from '../../../model/notification.service';
-import { ErrorDTO } from '../../../../../common/entities/Error';
-import { SettingsComponentDirective } from '../_abstract/abstract.settings.component';
-import { Utils } from '../../../../../common/Utils';
-import { ScheduledJobsService } from '../scheduled-jobs.service';
-import {
-  DefaultsJobs,
-  JobDTOUtils,
-} from '../../../../../common/entities/job/JobDTO';
-import {
-  JobProgressDTO,
-  JobProgressStates,
-} from '../../../../../common/entities/job/JobProgressDTO';
-import {
-  ReIndexingSensitivity,
-  ServerIndexingConfig,
-} from '../../../../../common/config/private/PrivateConfig';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {IndexingSettingsService} from './indexing.settings.service';
+import {AuthenticationService} from '../../../model/network/authentication.service';
+import {NavigationService} from '../../../model/navigation.service';
+import {NotificationService} from '../../../model/notification.service';
+import {ErrorDTO} from '../../../../../common/entities/Error';
+import {SettingsComponentDirective} from '../_abstract/abstract.settings.component';
+import {Utils} from '../../../../../common/Utils';
+import {ScheduledJobsService} from '../scheduled-jobs.service';
+import {DefaultsJobs, JobDTOUtils} from '../../../../../common/entities/job/JobDTO';
+import {JobProgressDTO, JobProgressStates} from '../../../../../common/entities/job/JobProgressDTO';
+import {ReIndexingSensitivity, ServerIndexingConfig} from '../../../../../common/config/private/PrivateConfig';
 
 @Component({
   selector: 'app-settings-indexing',
   templateUrl: './indexing.settings.component.html',
-  styleUrls: [
-    './indexing.settings.component.css',
-    '../_abstract/abstract.settings.component.css',
-  ],
+  styleUrls: ['./indexing.settings.component.css',
+    '../_abstract/abstract.settings.component.css'],
   providers: [IndexingSettingsService],
 })
-export class IndexingSettingsComponent
-  extends SettingsComponentDirective<
-    ServerIndexingConfig,
-    IndexingSettingsService
-  >
-  implements OnInit, OnDestroy
-{
+export class IndexingSettingsComponent extends SettingsComponentDirective<ServerIndexingConfig, IndexingSettingsService>
+  implements OnInit, OnDestroy {
+
+
   types: { key: number; value: string }[] = [];
   JobProgressStates = JobProgressStates;
   readonly indexingJobName = DefaultsJobs[DefaultsJobs.Indexing];
   readonly resetJobName = DefaultsJobs[DefaultsJobs['Database Reset']];
 
-  constructor(
-    authService: AuthenticationService,
-    navigation: NavigationService,
-    settingsService: IndexingSettingsService,
-    public jobsService: ScheduledJobsService,
-    notification: NotificationService
-  ) {
-    super(
-      $localize`Folder indexing`,
+  constructor(authService: AuthenticationService,
+              navigation: NavigationService,
+              settingsService: IndexingSettingsService,
+              public jobsService: ScheduledJobsService,
+              notification: NotificationService) {
+
+    super($localize`Folder indexing`,
       'pie-chart',
       authService,
       navigation,
       settingsService,
       notification,
-      (s) => s.Server.Indexing
-    );
+      s => s.Server.Indexing);
+
   }
 
   get Config(): any {
-    return { indexChangesOnly: true };
+    return {indexChangesOnly: true};
   }
 
   get Progress(): JobProgressDTO {
-    return this.jobsService.progress.value[
-      JobDTOUtils.getHashName(DefaultsJobs[DefaultsJobs.Indexing], this.Config)
-    ];
+    return this.jobsService.progress.value[JobDTOUtils.getHashName(DefaultsJobs[DefaultsJobs.Indexing], this.Config)];
   }
+
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
@@ -77,8 +60,9 @@ export class IndexingSettingsComponent
   async ngOnInit(): Promise<void> {
     super.ngOnInit();
     this.jobsService.subscribeToProgress();
-    this.types = Utils.enumToArray(ReIndexingSensitivity);
-    this.types.forEach((v) => {
+    this.types = Utils
+      .enumToArray(ReIndexingSensitivity);
+    this.types.forEach(v => {
       switch (v.value) {
         case 'low':
           v.value = $localize`low`;
@@ -93,14 +77,12 @@ export class IndexingSettingsComponent
     });
   }
 
+
   async index(): Promise<boolean> {
     this.inProgress = true;
     this.error = '';
     try {
-      await this.jobsService.start(
-        DefaultsJobs[DefaultsJobs.Indexing],
-        this.Config
-      );
+      await this.jobsService.start(DefaultsJobs[DefaultsJobs.Indexing],  this.Config);
       this.notification.info($localize`Folder indexing started`);
       this.inProgress = false;
       return true;
@@ -138,9 +120,7 @@ export class IndexingSettingsComponent
     this.inProgress = true;
     this.error = '';
     try {
-      await this.jobsService.start(
-        DefaultsJobs[DefaultsJobs['Database Reset']]
-      );
+      await this.jobsService.start(DefaultsJobs[DefaultsJobs['Database Reset']]);
       this.notification.info($localize`Resetting  database`);
       this.inProgress = false;
       return true;
@@ -154,6 +134,8 @@ export class IndexingSettingsComponent
     this.inProgress = false;
     return false;
   }
+
+
 }
 
 

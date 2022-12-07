@@ -153,7 +153,7 @@ export class Benchmark {
         return {
           name,
           duration: null,
-          items: output,
+          items: output.length,
         };
       }
 
@@ -170,7 +170,7 @@ export class Benchmark {
           return {
             name,
             duration: null,
-            items: msg,
+            items: msg.length,
           };
         }
 

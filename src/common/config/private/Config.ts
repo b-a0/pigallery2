@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { IPrivateConfig, ServerConfig } from './PrivateConfig';
-import { ClientConfig } from '../public/ClientConfig';
+import {IPrivateConfig, ServerConfig} from './PrivateConfig';
+import {ClientConfig} from '../public/ClientConfig';
 import * as crypto from 'crypto';
 import * as path from 'path';
-import { ConfigClass, ConfigClassBuilder } from 'typeconfig/node';
-import { ConfigProperty, IConfigClass } from 'typeconfig/common';
+import {ConfigClass, ConfigClassBuilder} from 'typeconfig/node';
+import {ConfigProperty, IConfigClass} from 'typeconfig/common';
+
 
 declare const process: any;
 
-const upTime = new Date().toISOString();
+const upTime = (new Date()).toISOString();
 
 @ConfigClass({
   configPath: path.join(__dirname, './../../../../config.json'),
@@ -25,47 +25,41 @@ const upTime = new Date().toISOString();
       rewriteENVConfig: true,
       enumsAsString: true,
       saveIfNotExist: true,
-      exitOnConfig: true,
+      exitOnConfig: true
     },
     defaults: {
-      enabled: true,
-    },
-  },
+      enabled: true
+    }
+  }
 })
 export class PrivateConfigClass implements IPrivateConfig {
-  @ConfigProperty({ type: ServerConfig })
+  @ConfigProperty({type: ServerConfig})
   Server: ServerConfig = new ServerConfig();
-  @ConfigProperty({ type: ClientConfig })
-  Client: IConfigClass & ClientConfig = new ClientConfig() as IConfigClass &
-    ClientConfig;
+  @ConfigProperty({type: ClientConfig})
+  Client: IConfigClass & ClientConfig = new ClientConfig() as (IConfigClass & ClientConfig);
 
   constructor() {
     if (!this.Server.sessionSecret || this.Server.sessionSecret.length === 0) {
-      this.Server.sessionSecret = [
+      this.Server.sessionSecret = [crypto.randomBytes(256).toString('hex'),
         crypto.randomBytes(256).toString('hex'),
-        crypto.randomBytes(256).toString('hex'),
-        crypto.randomBytes(256).toString('hex'),
-      ];
+        crypto.randomBytes(256).toString('hex')];
     }
 
-    this.Server.Environment.appVersion =
-      require('../../../../package.json').version;
-    this.Server.Environment.buildTime =
-      require('../../../../package.json').buildTime;
-    this.Server.Environment.buildCommitHash =
-      require('../../../../package.json').buildCommitHash;
+    this.Server.Environment.appVersion = require('../../../../package.json').version;
+    this.Server.Environment.buildTime = require('../../../../package.json').buildTime;
+    this.Server.Environment.buildCommitHash = require('../../../../package.json').buildCommitHash;
     this.Server.Environment.upTime = upTime;
     this.Server.Environment.isDocker = !!process.env.PI_DOCKER;
   }
+
 
   async original(): Promise<PrivateConfigClass & IConfigClass> {
     const pc = ConfigClassBuilder.attachInterface(new PrivateConfigClass());
     await pc.load();
     return pc;
   }
+
 }
 
-export const Config = ConfigClassBuilder.attachInterface(
-  new PrivateConfigClass()
-);
+export const Config = ConfigClassBuilder.attachInterface(new PrivateConfigClass());
 Config.loadSync();

@@ -1,13 +1,12 @@
-import { IPersonManager } from '../interfaces/IPersonManager';
-import { PersonDTO } from '../../../../common/entities/PersonDTO';
-import { FaceRegion } from '../../../../common/entities/PhotoDTO';
+import {IPersonManager} from '../interfaces/IPersonManager';
+import {PersonDTO} from '../../../../common/entities/PersonDTO';
+import {FaceRegion} from '../../../../common/entities/PhotoDTO';
 
 export class PersonManager implements IPersonManager {
   resetPreviews(): Promise<void> {
     throw new Error('not supported by memory DB');
   }
-
-  saveAll(person: { name: string; mediaId: number }[]): Promise<void> {
+  saveAll(person: { name: string; faceRegion: FaceRegion }[]): Promise<void> {
     throw new Error('not supported by memory DB');
   }
 
@@ -18,6 +17,7 @@ export class PersonManager implements IPersonManager {
   get(name: string): Promise<any> {
     throw new Error('not supported by memory DB');
   }
+
 
   onGalleryIndexUpdate(): Promise<void> {
     throw new Error('not supported by memory DB');

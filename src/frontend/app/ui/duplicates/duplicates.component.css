@@ -1,16 +1,16 @@
-.card {
+.card{
   margin: 8px 0;
 }
 
-.row {
+.row{
   margin: 5px 0;
   cursor: pointer;
 }
 
-.row:hover {
+.row:hover{
   background-color: #f8f9fa;
 }
 
-a {
+a{
   color: #212529;
 }

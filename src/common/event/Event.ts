@@ -3,14 +3,15 @@ export class Event<T> {
   protected singleHandlers: ((data?: T) => void)[] = [];
 
   public on(handler: (data?: T) => void): void {
-    if (typeof handler !== 'function') {
+    if (typeof (handler) !== 'function') {
       throw new Error('Event::on: Handler is not a function');
     }
     this.handlers.push(handler);
   }
 
+
   public once(handler: (data?: T) => void): void {
-    if (typeof handler !== 'function') {
+    if (typeof (handler) !== 'function') {
       throw new Error('Event::once: Handler is not a function');
     }
     this.singleHandlers.push(handler);
@@ -25,8 +26,8 @@ export class Event<T> {
   }
 
   public off(handler: (data?: T) => void): void {
-    this.handlers = this.handlers.filter((h) => h !== handler);
-    this.singleHandlers = this.singleHandlers.filter((h) => h !== handler);
+    this.handlers = this.handlers.filter(h => h !== handler);
+    this.singleHandlers = this.singleHandlers.filter(h => h !== handler);
   }
 
   public allOff(): void {
@@ -36,10 +37,10 @@ export class Event<T> {
 
   public trigger(data?: T): void {
     if (this.handlers) {
-      this.handlers.slice(0).forEach((h) => h(data));
+      this.handlers.slice(0).forEach(h => h(data));
     }
     if (this.singleHandlers) {
-      this.singleHandlers.slice(0).forEach((h) => h(data));
+      this.singleHandlers.slice(0).forEach(h => h(data));
       this.singleHandlers = [];
     }
   }

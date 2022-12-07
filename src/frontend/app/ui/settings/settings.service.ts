@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { NetworkService } from '../../model/network/network.service';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {NetworkService} from '../../model/network/network.service';
 
-import { WebConfig } from '../../../../common/config/private/WebConfig';
-import { WebConfigClassBuilder } from 'typeconfig/src/decorators/builders/WebConfigClassBuilder';
+import {WebConfig} from '../../../../common/config/private/WebConfig';
+import {WebConfigClassBuilder} from 'typeconfig/src/decorators/builders/WebConfigClassBuilder';
 
 @Injectable()
 export class SettingsService {
@@ -22,9 +22,7 @@ export class SettingsService {
     this.fetchingSettings = true;
     try {
       const wcg = WebConfigClassBuilder.attachInterface(new WebConfig());
-      wcg.load(
-        await this.networkService.getJson<Promise<WebConfig>>('/settings')
-      );
+      wcg.load(await this.networkService.getJson<Promise<WebConfig>>('/settings'));
       this.settings.next(wcg);
     } catch (e) {
       console.error(e);

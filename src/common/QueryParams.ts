@@ -7,17 +7,17 @@ export const QueryParams = {
       fromDate: 'fromDate',
       toDate: 'toDate',
       minResolution: 'fromRes',
-      maxResolution: 'toRes',
+      maxResolution: 'toRes'
     },
     search: {
       type: 'type',
-      query: 'qs',
+      query: 'qs'
     },
     photo: 'p',
     sharingKey_query: 'sk',
     sharingKey_params: 'sharingKey',
     directory: 'directory',
     knownLastModified: 'klm',
-    knownLastScanned: 'kls',
-  },
+    knownLastScanned: 'kls'
+  }
 };

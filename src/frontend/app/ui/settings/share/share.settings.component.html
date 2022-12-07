@@ -8,14 +8,14 @@
           class="switch"
           name="enabled"
           switch-on-color="success"
-          [switch-inverse]="true"
+          switch-inverse="true"
           switch-off-text="Disabled"
           switch-on-text="Enabled"
           i18n-switch-off-text
           i18n-switch-on-text
           [switch-disabled]="inProgress || !settingsService.isSupported()"
-          [switch-handle-width]="100"
-          [switch-label-width]="20"
+          switch-handle-width="100"
+          switch-label-width="20"
           [(ngModel)]="states.enabled.value">
         </bSwitch>
       </div>
@@ -31,7 +31,7 @@
           i18n-description i18n-name
           [ngModel]="states.passwordProtected"
           [simplifiedMode]="simplifiedMode"
-          [required]="true">
+          required="true">
         </app-settings-entry>
 
 
@@ -41,11 +41,11 @@
       </div>
 
       <div class="share-settings-save-buttons">
-        <button class="btn btn-success float-end"
+        <button class="btn btn-success float-right"
                 [disabled]="!settingsForm.form.valid || !changed || inProgress"
                 (click)="save()" i18n>Save
         </button>
-        <button class="btn btn-secondary float-end"
+        <button class="btn btn-secondary float-right"
                 [disabled]=" !changed || inProgress"
                 (click)="reset()" i18n>Reset
         </button>
@@ -67,19 +67,17 @@
             <th></th>
           </tr>
           </thead>
-          <tbody>
-            <tr *ngFor="let share of shares">
-              <td>{{share.sharingKey}}</td>
-              <td>{{share.path}}</td>
-              <td>{{share.creator.name}}</td>
-              <td>{{share.expires | date}}</td>
-              <td>
-                <button (click)="deleteSharing(share)" class="btn btn-danger float-end">
-                  <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
-                </button>
-              </td>
-            </tr>
-          </tbody>
+          <tr *ngFor="let share of shares">
+            <td>{{share.sharingKey}}</td>
+            <td>{{share.path}}</td>
+            <td>{{share.creator.name}}</td>
+            <td>{{share.expires | date}}</td>
+            <td>
+              <button (click)="deleteSharing(share)" class="btn btn-danger float-right">
+                <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
+              </button>
+            </td>
+          </tr>
         </table>
       </ng-container>
 

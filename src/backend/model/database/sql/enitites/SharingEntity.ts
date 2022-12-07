@@ -1,11 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { SharingDTO } from '../../../../../common/entities/SharingDTO';
-import { UserEntity } from './UserEntity';
-import { UserDTO } from '../../../../../common/entities/UserDTO';
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {SharingDTO} from '../../../../../common/entities/SharingDTO';
+import {UserEntity} from './UserEntity';
+import {UserDTO} from '../../../../../common/entities/UserDTO';
 
 @Entity()
 export class SharingEntity implements SharingDTO {
-  @PrimaryGeneratedColumn({ unsigned: true })
+  @PrimaryGeneratedColumn({unsigned: true})
   id: number;
 
   @Column()
@@ -14,30 +14,28 @@ export class SharingEntity implements SharingDTO {
   @Column()
   path: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({type: 'text', nullable: true})
   password: string;
 
   @Column('bigint', {
-    unsigned: true,
-    transformer: {
-      from: (v) => parseInt(v, 10),
-      to: (v) => v,
-    },
+    unsigned: true, transformer: {
+      from: v => parseInt(v, 10),
+      to: v => v
+    }
   })
   expires: number;
 
   @Column('bigint', {
-    unsigned: true,
-    transformer: {
-      from: (v) => parseInt(v, 10),
-      to: (v) => v,
-    },
+    unsigned: true, transformer: {
+      from: v => parseInt(v, 10),
+      to: v => v
+    }
   })
   timeStamp: number;
 
   @Column()
   includeSubfolders: boolean;
 
-  @ManyToOne((type) => UserEntity, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(type => UserEntity, {onDelete: 'CASCADE', nullable: false})
   creator: UserDTO;
 }

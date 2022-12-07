@@ -10,7 +10,7 @@
   cursor: pointer;
   font-size: xx-large;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color:rgba(0,0,0,0.2);
   border-radius: 5px !important;
 }
 
@@ -91,7 +91,7 @@
   text-align: left;
   padding: 5px 13px;
   font-size: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0,0,0,0.2);
   border-radius: 5px !important;
 }
 
@@ -152,21 +152,6 @@
 
 .highlight:hover {
   opacity: 1.0;
-}
-
-@keyframes blink {
-  0% {
-    opacity: 0.5;
-  }
-  25% {
-    opacity: 1.0;
-  }
-  75% {
-    opacity: 1.0;
-  }
-  100% {
-    opacity: 0.5;
-  }
 }
 
 @-webkit-keyframes blink {
@@ -252,7 +237,7 @@ input[type="range"].zoom-progress::-moz-range-track {
   text-align: center;
   display: table;
   font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color:rgba(0,0,0,0.2);
   border-radius: 5px !important;
 }
 

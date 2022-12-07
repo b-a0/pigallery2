@@ -7,7 +7,7 @@ import * as path from 'path';
 
 describe('VideoProcessing', () => {
 
-  /* eslint-disable no-unused-expressions,@typescript-eslint/no-unused-expressions */
+  // tslint:disable:no-unused-expression
   it('should generate converted file path', async () => {
 
     ProjectPath.ImageFolder = path.join(__dirname, './../../../assets');

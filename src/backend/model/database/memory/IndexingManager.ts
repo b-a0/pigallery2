@@ -1,5 +1,5 @@
-import { IIndexingManager } from '../interfaces/IIndexingManager';
-import { ParentDirectoryDTO } from '../../../../common/entities/DirectoryDTO';
+import {IIndexingManager} from '../interfaces/IIndexingManager';
+import {ParentDirectoryDTO} from '../../../../common/entities/DirectoryDTO';
 
 export class IndexingManager implements IIndexingManager {
   IsSavingInProgress: boolean;
@@ -16,4 +16,6 @@ export class IndexingManager implements IIndexingManager {
   resetDB(): Promise<void> {
     throw new Error('not supported by memory DB');
   }
+
+
 }

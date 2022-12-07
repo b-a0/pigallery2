@@ -32,12 +32,13 @@
   <!-- sharing Modal-->
   <div class="modal-header">
     <h5 class="modal-title" i18n>Add saved search</h5>
-    <button type="button"  class="btn-close"  (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form #savedSearchPanelForm="ngForm" class="form-horizontal">
-      <div class="mb-1">
+      <div class="form-group">
         <label for="saveSearchName">Album name</label>
         <input
           id="saveSearchName"
@@ -48,7 +49,7 @@
           [(ngModel)]="savedSearch.name"
           type="text"/>
       </div>
-      <div class="mb-1">
+      <div class="form-group">
         <label for="album-search-query-builder">Search query</label>
         <app-gallery-search-query-builder
           id="album-search-query-builder"
@@ -58,10 +59,10 @@
       </div>
 
 
-      <div class="input-group-btn float-end row" style="display: block">
+      <div class="input-group-btn float-right row" style="display: block">
         <app-saved-search-popup-btn
           [disabled]="savedSearch.searchQuery.text == ''"
-          class="me-2"
+          class="mr-2"
           [savedSearchDTO]="savedSearch">
         </app-saved-search-popup-btn>
         <button class="btn btn-primary" type="button"

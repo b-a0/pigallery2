@@ -13,8 +13,9 @@ import {VideoEntity} from '../../database/sql/enitites/VideoEntity';
 import {backendTexts} from '../../../../common/BackendTexts';
 import {ProjectPath} from '../../../ProjectPath';
 import {DatabaseType} from '../../../../common/config/private/PrivateConfig';
-import {FileEntity} from '../../database/sql/enitites/FileEntity';
-import {DirectoryBaseDTO, DirectoryDTOUtils} from '../../../../common/entities/DirectoryDTO';
+
+declare var global: NodeJS.Global;
+
 
 const LOG_TAG = '[FileJob]';
 
@@ -26,6 +27,7 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
   directoryQueue: string[] = [];
   fileQueue: string[] = [];
 
+
   protected constructor(private scanFilter: DirectoryScanSettings) {
     super();
     this.scanFilter.noChildDirPhotos = true;
@@ -35,7 +37,7 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
         type: 'boolean',
         name: backendTexts.indexedFilesOnly.name,
         description: backendTexts.indexedFilesOnly.description,
-        defaultValue: true,
+        defaultValue: true
       });
     }
   }
@@ -49,6 +51,7 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
   protected async filterMediaFiles(files: FileDTO[]): Promise<FileDTO[]> {
     return files;
   }
+
 
   protected async filterMetaFiles(files: FileDTO[]): Promise<FileDTO[]> {
     return files;
@@ -64,10 +67,9 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
     }
 
     if (this.directoryQueue.length > 0) {
-      if (
-        this.config.indexedOnly === true &&
-        Config.Server.Database.type !== DatabaseType.memory
-      ) {
+
+      if (this.config.indexedOnly === true &&
+        Config.Server.Database.type !== DatabaseType.memory) {
         await this.loadAllMediaFilesFromDB();
         this.directoryQueue = [];
       } else {
@@ -87,13 +89,8 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
         }
       } catch (e) {
         console.error(e);
-        Logger.error(
-          LOG_TAG,
-          'Error during processing file:' + filePath + ', ' + e.toString()
-        );
-        this.Progress.log(
-          'Error during processing file:' + filePath + ', ' + e.toString()
-        );
+        Logger.error(LOG_TAG, 'Error during processing file:' + filePath + ', ' + e.toString());
+        this.Progress.log('Error during processing file:' + filePath + ', ' + e.toString());
       }
     }
     return true;
@@ -102,104 +99,51 @@ export abstract class FileJob<S extends { indexedOnly: boolean } = { indexedOnly
   private async loadADirectoryFromDisk(): Promise<void> {
     const directory = this.directoryQueue.shift();
     this.Progress.log('scanning directory: ' + directory);
-    const scanned = await DiskManager.scanDirectoryNoMetadata(
-      directory,
-      this.scanFilter
-    );
+    const scanned = await DiskManager.scanDirectoryNoMetadata(directory, this.scanFilter);
     for (const item of scanned.directories) {
       this.directoryQueue.push(path.join(item.path, item.name));
     }
-    DirectoryDTOUtils.addReferences(scanned as DirectoryBaseDTO);
     if (this.scanFilter.noPhoto !== true || this.scanFilter.noVideo !== true) {
       const scannedAndFiltered = await this.filterMediaFiles(scanned.media);
       for (const item of scannedAndFiltered) {
-        this.fileQueue.push(
-          path.join(
-            ProjectPath.ImageFolder,
-            item.directory.path,
-            item.directory.name,
-            item.name
-          )
-        );
+        this.fileQueue.push(path.join(ProjectPath.ImageFolder, item.directory.path, item.directory.name, item.name));
       }
     }
     if (this.scanFilter.noMetaFile !== true) {
       const scannedAndFiltered = await this.filterMetaFiles(scanned.metaFile);
       for (const item of scannedAndFiltered) {
-        this.fileQueue.push(
-          path.join(
-            ProjectPath.ImageFolder,
-            item.directory.path,
-            item.directory.name,
-            item.name
-          )
-        );
+        this.fileQueue.push(path.join(ProjectPath.ImageFolder, item.directory.path, item.directory.name, item.name));
       }
     }
   }
 
   private async loadAllMediaFilesFromDB(): Promise<void> {
-    if (this.scanFilter.noVideo === true &&
-      this.scanFilter.noPhoto === true &&
-      this.scanFilter.noMetaFile === true) {
+
+    if (this.scanFilter.noVideo === true && this.scanFilter.noPhoto === true) {
       return;
     }
-
     this.Progress.log('Loading files from db');
     Logger.silly(LOG_TAG, 'Loading files from db');
 
     const connection = await SQLConnection.getConnection();
-    if (!this.scanFilter.noVideo ||
-      !this.scanFilter.noPhoto) {
 
-      let usedEntity = MediaEntity;
+    let usedEntity = MediaEntity;
 
-      if (this.scanFilter.noVideo === true) {
-        usedEntity = PhotoEntity;
-      } else if (this.scanFilter.noPhoto === true) {
-        usedEntity = VideoEntity;
-      }
-
-      const result = await connection
-        .getRepository(usedEntity)
-        .createQueryBuilder('media')
-        .select(['media.name', 'directory.name', 'directory.path'])
-        .leftJoin('media.directory', 'directory')
-        .getMany();
-
-      const scannedAndFiltered = await this.filterMediaFiles(result);
-      for (const item of scannedAndFiltered) {
-        this.fileQueue.push(
-          path.join(
-            ProjectPath.ImageFolder,
-            item.directory.path,
-            item.directory.name,
-            item.name
-          )
-        );
-      }
+    if (this.scanFilter.noVideo === true) {
+      usedEntity = PhotoEntity;
+    } else if (this.scanFilter.noPhoto === true) {
+      usedEntity = VideoEntity;
     }
-    if (!this.scanFilter.noMetaFile) {
 
-      const result = await connection
-        .getRepository(FileEntity)
-        .createQueryBuilder('file')
-        .select(['file.name', 'directory.name', 'directory.path'])
-        .leftJoin('file.directory', 'directory')
-        .getMany();
+    const result = await connection
+      .getRepository(usedEntity)
+      .createQueryBuilder('media')
+      .select(['media.name', 'media.id'])
+      .leftJoinAndSelect('media.directory', 'directory')
+      .getMany();
 
-
-      const scannedAndFiltered = await this.filterMetaFiles(result);
-      for (const item of scannedAndFiltered) {
-        this.fileQueue.push(
-          path.join(
-            ProjectPath.ImageFolder,
-            item.directory.path,
-            item.directory.name,
-            item.name
-          )
-        );
-      }
+    for (const item of result) {
+      this.fileQueue.push(path.join(ProjectPath.ImageFolder, item.directory.path, item.directory.name, item.name));
     }
   }
 }

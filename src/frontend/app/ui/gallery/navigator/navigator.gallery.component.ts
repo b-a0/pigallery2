@@ -1,24 +1,16 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { UserDTOUtils } from '../../../../../common/entities/UserDTO';
-import { AuthenticationService } from '../../../model/network/authentication.service';
-import { QueryService } from '../../../model/query.service';
-import {
-  ContentService,
-  ContentWrapperWithError,
-  DirectoryContent,
-} from '../content.service';
-import { Utils } from '../../../../../common/Utils';
-import { SortingMethods } from '../../../../../common/entities/SortingMethods';
-import { Config } from '../../../../../common/config/public/Config';
-import {
-  SearchQueryTypes,
-  TextSearch,
-  TextSearchQueryMatchTypes,
-} from '../../../../../common/entities/SearchQueryDTO';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { GallerySortingService } from './sorting.service';
+import {Component} from '@angular/core';
+import {RouterLink} from '@angular/router';
+import {UserDTOUtils} from '../../../../../common/entities/UserDTO';
+import {AuthenticationService} from '../../../model/network/authentication.service';
+import {QueryService} from '../../../model/query.service';
+import {ContentService, ContentWrapperWithError, DirectoryContent} from '../content.service';
+import {Utils} from '../../../../../common/Utils';
+import {SortingMethods} from '../../../../../common/entities/SortingMethods';
+import {Config} from '../../../../../common/config/public/Config';
+import {SearchQueryTypes, TextSearch, TextSearchQueryMatchTypes} from '../../../../../common/entities/SearchQueryDTO';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {GallerySortingService} from './sorting.service';
 
 @Component({
   selector: 'app-gallery-navbar',
@@ -27,6 +19,7 @@ import { GallerySortingService } from './sorting.service';
   providers: [RouterLink],
 })
 export class GalleryNavigatorComponent {
+
   public SortingMethods = SortingMethods;
   public sortingMethodsType: { key: number; value: string }[] = [];
   public readonly config = Config;
@@ -37,18 +30,14 @@ export class GalleryNavigatorComponent {
   public showFilters = false;
   private readonly RootFolderName: string;
 
-  constructor(
-    private authService: AuthenticationService,
-    public queryService: QueryService,
-    public galleryService: ContentService,
-    public sortingService: GallerySortingService
-  ) {
+  constructor(private authService: AuthenticationService,
+              public queryService: QueryService,
+              public galleryService: ContentService,
+              public sortingService: GallerySortingService) {
     this.sortingMethodsType = Utils.enumToArray(SortingMethods);
-    this.RootFolderName = $localize`Home`;
+    this.RootFolderName = $localize`Images`;
     this.wrappedContent = this.galleryService.content;
-    this.directoryContent = this.wrappedContent.pipe(
-      map((c) => (c.directory ? c.directory : c.searchResult))
-    );
+    this.directoryContent = this.wrappedContent.pipe(map(c => c.directory ? c.directory : c.searchResult));
   }
 
   get isDirectory(): boolean {
@@ -57,14 +46,11 @@ export class GalleryNavigatorComponent {
 
   get ItemCount(): number {
     const c = this.galleryService.content.value;
-    return c.directory
-      ? c.directory.mediaCount
-      : c.searchResult
-      ? c.searchResult.media.length
-      : 0;
+    return c.directory ? c.directory.mediaCount : (c.searchResult ? c.searchResult.media.length : 0);
   }
 
   get Routes(): NavigatorPath[] {
+
     const c = this.galleryService.content.value;
     if (!c.directory) {
       return [];
@@ -88,38 +74,27 @@ export class GalleryNavigatorComponent {
 
     // create root link
     if (dirs.length === 0) {
-      arr.push({ name: this.RootFolderName, route: null });
+      arr.push({name: this.RootFolderName, route: null});
     } else {
-      arr.push({
-        name: this.RootFolderName,
-        route: UserDTOUtils.isDirectoryPathAvailable('/', user.permissions)
-          ? '/'
-          : null,
-      });
+      arr.push({name: this.RootFolderName, route: UserDTOUtils.isDirectoryPathAvailable('/', user.permissions) ? '/' : null});
     }
 
     // create rest navigation
     dirs.forEach((name, index) => {
       const route = dirs.slice(0, dirs.indexOf(name) + 1).join('/');
       if (dirs.length - 1 === index) {
-        arr.push({ name, route: null });
+        arr.push({name, route: null});
       } else {
-        arr.push({
-          name,
-          route: UserDTOUtils.isDirectoryPathAvailable(route, user.permissions)
-            ? route
-            : null,
-        });
+        arr.push({name, route: UserDTOUtils.isDirectoryPathAvailable(route, user.permissions) ? route : null});
       }
     });
 
     return arr;
+
   }
 
   get DefaultSorting(): SortingMethods {
-    return this.sortingService.getDefaultSorting(
-      this.galleryService.content.value.directory
-    );
+    return this.sortingService.getDefaultSorting(this.galleryService.content.value.directory);
   }
 
   setSorting(sorting: SortingMethods): void {
@@ -132,16 +107,12 @@ export class GalleryNavigatorComponent {
       return null;
     }
     let queryParams = '';
-    Object.entries(this.queryService.getParams()).forEach((e) => {
+    Object.entries(this.queryService.getParams()).forEach(e => {
       queryParams += e[0] + '=' + e[1];
     });
-    return Utils.concatUrls(
-      Config.Client.urlBase,
+    return Utils.concatUrls(Config.Client.urlBase,
       '/api/gallery/zip/',
-      c.directory.path,
-      c.directory.name,
-      '?' + queryParams
-    );
+      c.directory.path, c.directory.name, '?' + queryParams);
   }
 
   getDirectoryFlattenSearchQuery(): string {
@@ -152,9 +123,11 @@ export class GalleryNavigatorComponent {
     return JSON.stringify({
       type: SearchQueryTypes.directory,
       matchType: TextSearchQueryMatchTypes.like,
-      text: Utils.concatUrls('./', c.directory.path, c.directory.name),
+      text: Utils.concatUrls('./', c.directory.path, c.directory.name)
     } as TextSearch);
+
   }
+
 }
 
 interface NavigatorPath {
